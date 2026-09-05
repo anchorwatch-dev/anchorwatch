@@ -1,0 +1,1 @@
+- Fly.io: pay-as-you-go, ~/bin/zsh–3/month with auto-stop (personal org)

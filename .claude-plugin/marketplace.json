@@ -1,0 +1,15 @@
+{
+  "name": "anchorwatch",
+  "owner": { "name": "Anchorwatch", "url": "https://anchorwatch.fly.dev" },
+  "metadata": { "description": "Guardrails and workflow discipline for Claude Code.", "version": "0.1.0", "pluginRoot": "./plugins" },
+  "plugins": [
+    {
+      "name": "anchorwatch",
+      "source": "./plugins/anchorwatch",
+      "description": "Guardrails for Claude Code: blocks destructive shell/git/SQL commands, protects secret files, scans written code for leaked credentials, warns before irreversible deploys.",
+      "category": "security",
+      "tags": ["guardrails", "safety", "hooks", "secrets", "git"],
+      "license": "MIT"
+    }
+  ]
+}

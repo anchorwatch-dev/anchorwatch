@@ -1,0 +1,11 @@
+{
+  "name": "anchorwatch-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bun run build.ts",
+    "start": "bun run server.ts",
+    "dev": "bun run build.ts && PORT=3000 bun run server.ts"
+  },
+  "dependencies": { "marked": "^15.0.0" }
+}

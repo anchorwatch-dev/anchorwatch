@@ -1,0 +1,22 @@
+name: test
+on:
+  push: { branches: [main] }
+  pull_request:
+jobs:
+  hooks:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        parser: [jq, node, python3]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: AW_FORCE_PARSER=${{ matrix.parser }} bash tests/run.sh
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npx -y @anthropic-ai/claude-code@latest plugin validate ./plugins/anchorwatch --strict
+      - run: npx -y @anthropic-ai/claude-code@latest plugin validate . --strict

@@ -1,0 +1,10 @@
+# Changelog
+
+All notable changes to the `anchorwatch` plugin. Format: [Keep a Changelog](https://keepachangelog.com); versions follow semver.
+
+## [0.1.0] - 2026-09-06
+### Added
+- Initial release with 24 rules across Bash, Edit/Write, Read and PostToolUse hooks.
+- Skills: `status`, `check`, `allow`, `doctor`, `rules`.
+- Per-project `.anchorwatch.json` (rule levels, allow patterns, protected branches) and `ANCHORWATCH_DISABLE` kill switch.
+- Test suite (116 cases) exercising jq, node and python3 parsers; CI on macOS and Linux.
