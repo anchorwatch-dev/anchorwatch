@@ -6,3 +6,4 @@ site/data/*.db
 .env
 .env.*
 !.env.example
+site/data/
