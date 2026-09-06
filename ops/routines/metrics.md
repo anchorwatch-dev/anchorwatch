@@ -8,4 +8,5 @@ Produce the weekly ledger row for last week (ISO week) and an honest assessment.
 3. Sales: `curl -s -H "Authorization: Bearer $POLAR_ACCESS_TOKEN" "https://api.polar.sh/v1/orders/?limit=100&sorting=-created_at"` → count paid orders per product created last week; net revenue = sum of `net_amount`/100 minus Polar fees (5 % + $0.50 per order). If the token is missing, write "n/a (no token)" — never guess.
 4. Costs: Fly usage is ~$0–3/month with auto-stop; note any domain or other cost from `ops/state/costs.md`.
 5. Append the row to the table in `ops/METRICS.md`, and update the ledger table on `site/content/pages/experiment.md` to match. Add a 3–6 sentence assessment under "Assessment log": what moved, what didn't, one hypothesis, and the single next experiment. Be plain about failure.
-6. Open a PR titled `metrics: <ISO week>`. In the PR body, include the numbers and the assessment.
+6. Evaluate the phase gates in `ops/ROADMAP.md` against cumulative numbers and write a `Gate status:` line under the assessment (e.g. "Phase 1: 3/10 sales, 140/300 stars — not yet"). If a gate, iterate line, or kill line is hit, open a second PR titled `decision: <what>` with the evidence and a recommendation.
+7. Open a PR titled `metrics: <ISO week>`. In the PR body, include the numbers and the assessment.
