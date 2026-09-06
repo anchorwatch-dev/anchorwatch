@@ -38,7 +38,7 @@ function renderDir(sub: string, prefix: string, kind: "article" | "page", collec
     const html = marked.parse(body) as string;
     const page: Page = { title: front.title ?? slug, description: front.description ?? "", path, body: html, date: front.date, updated: front.updated, kind: slug === "index" ? "page" : kind };
     out(path, layout(page));
-    urls.push({ loc: SITE + path, lastmod: front.updated ?? front.date });
+    if (slug !== "thanks") urls.push({ loc: SITE + path, lastmod: front.updated ?? front.date });
     if (collect && slug !== "index") collect.push({ ...front, path });
   }
 }
