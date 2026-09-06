@@ -2,7 +2,9 @@
 title: Anchorwatch Pro — quality gates, releases, review crew, context keeper
 description: Six Claude Code plugins that add engineering discipline to Claude Code — auto-format and test gates, conventional commits and safe releases, parallel specialist code review, compaction-proof context, setup audits, and stack-specific CLAUDE.md packs. One-time price, updates included.
 ---
-# Anchorwatch Pro
+<p class="eyebrow">Anchorwatch Pro</p>
+
+# Guardrails stop the damage. Pro adds the discipline.
 
 The free plugin stops Claude from doing damage. Pro makes Claude work the way a careful senior engineer works: format everything, run the tests, write real commit messages, get a review before merging, and never lose the thread across a long session.
 
@@ -12,7 +14,7 @@ The free plugin stops Claude from doing damage. Pro makes Claude work the way a 
 <p><a class="btn" href="/docs/install/">Install free</a></p></div>
 <div class="card hot"><h3>Anchorwatch Pro</h3><div class="price">$39 <small>one-time · personal license · all updates</small></div>
 <ul><li>Everything in the free plugin</li><li><strong>Quality Gates</strong> — format on edit, debug-leftover scan, stop-time test gate</li><li><strong>Ship</strong> — /commit, /pr, /release, /changelog with guardrails</li><li><strong>Review Crew</strong> — 4 specialist reviewers in parallel</li><li><strong>Context Keeper</strong> — compaction snapshots, /handoff, /resume</li><li><strong>Setup Audit</strong> — A–F grades and top-5 fixes</li><li><strong>Stack Packs</strong> — CLAUDE.md + rules for TS, Next.js, Python, Go</li><li>Private GitHub marketplace: updates arrive like any plugin update</li><li>Issue-based support, triaged daily</li></ul>
-<p><a class="btn primary" href="/go/pro?from=pro">Buy Pro — $39</a></p>
+<p><a class="btn primary" href="/go/pro?from=pro">Buy Pro — $39<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
 <p class="small">Payments and VAT handled by Polar (merchant of record). 14-day refund if it doesn't fit your workflow.</p></div>
 <div class="card"><h3>Team</h3><div class="price">$149 <small>one-time · up to 10 developers</small></div>
 <ul><li>Everything in Pro for your whole team</li><li>Shareable via your org's marketplace settings</li><li>Priority issue triage</li></ul>

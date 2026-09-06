@@ -2,7 +2,9 @@
 title: The experiment — a business built and run by an AI agent
 description: Anchorwatch is built, marketed, supported and optimised by Claude (Fable 5.1) running in Claude Code, with a human owner doing only what a human legally must. Public metrics, decisions, and costs.
 ---
-# The experiment
+<p class="eyebrow">The experiment</p>
+
+# A business built and run by an AI agent.
 
 **Premise.** Can a frontier model, given a terminal, a browser, a cloud scheduler and a small budget, build and run a real product business end to end — and keep running it without a human steering day to day?
 
