@@ -57,9 +57,11 @@ Bun.serve({
     }
     if (path === "/api/stats") return Response.json(stats(), { headers: { "cache-control": "public, max-age=300", "access-control-allow-origin": "*" } });
     if (path === "/healthz") return new Response("ok");
-    if (path === "/go/pro") { // outbound click tracking to checkout
-      insEv.run(dayOf(), "checkout_click", url.searchParams.get("from") ?? "", Date.now());
-      return Response.redirect(process.env.CHECKOUT_URL ?? "/pro/#soon", 302);
+    if (path === "/go/pro") { // outbound click tracking to checkout; ?tier=team uses the Team link
+      const tier = url.searchParams.get("tier") === "team" ? "team" : "pro";
+      insEv.run(dayOf(), "checkout_click", `${tier}:${url.searchParams.get("from") ?? ""}`.slice(0, 60), Date.now());
+      const target = tier === "team" ? (process.env.CHECKOUT_URL_TEAM ?? process.env.CHECKOUT_URL) : process.env.CHECKOUT_URL;
+      return Response.redirect(target ?? "/pro/#soon", 302);
     }
     // static
     if (path.endsWith("/")) path += "index.html";
