@@ -5,7 +5,7 @@ description: Add the Anchorwatch marketplace, install the plugin, and verify it 
 # Install
 
 ## Requirements
-- Claude Code 2.0 or newer (2.1+ recommended).
+- Claude Code 2.1 or newer recommended. On 2.0.x the rules still block (verified on 2.0.53), but the reason is shown as a permission prompt instead of an explanation Claude can act on.
 - `bash` (on Windows, Claude Code runs hooks through Git Bash — install Git for Windows if you haven't).
 - One JSON parser: `jq` (recommended — `brew install jq` / `apt install jq`), or `node`, or `python3`. Anchorwatch picks whichever is present.
 

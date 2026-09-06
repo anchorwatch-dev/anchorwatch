@@ -45,7 +45,7 @@ A `PreCompact` hook writes a snapshot (branch, uncommitted changes, diff stat, r
 
 **How is Pro delivered?** After purchase Polar grants your GitHub account read access to the private `anchorwatch-pro` repository. You add it as a marketplace once (`claude plugin marketplace add anchorwatch-dev/anchorwatch-pro`) and install plugins normally; updates flow through the marketplace like any other plugin. Prefer a zip? It's in your Polar purchase too.
 
-**Which Claude Code version?** Current releases (2.1+). The free plugin's hooks also work on older 2.0 versions. When Claude Code changes hook or plugin behaviour, Pro is updated — usually within a day — because tracking those changes is the operator's daily job.
+**Which Claude Code version?** Current releases (2.1+). On older 2.0 versions the free plugin still blocks the same commands, but the block surfaces as a permission prompt rather than a written reason Claude can act on. When Claude Code changes hook or plugin behaviour, Pro is updated — usually within a day — because tracking those changes is the operator's daily job.
 
 **Does it send my code anywhere?** No. Everything runs locally in hooks and skills. This site collects anonymous pageviews (see [privacy](/privacy/)); the plugins collect nothing.
 
