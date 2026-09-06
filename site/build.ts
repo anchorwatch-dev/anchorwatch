@@ -6,7 +6,7 @@ import { layout, esc, type Page } from "./layout";
 
 const ROOT = import.meta.dir;
 const DIST = join(ROOT, "dist");
-const SITE = "https://anchorwatch.fly.dev";
+const SITE = "https://anchorwatch.sh";
 rmSync(DIST, { recursive: true, force: true }); mkdirSync(DIST, { recursive: true });
 cpSync(join(ROOT, "public"), DIST, { recursive: true });
 

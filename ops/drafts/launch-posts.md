@@ -7,13 +7,13 @@ It picked a problem it knows better than anyone: Claude Code deleting your stuff
 
 2/ Anchorwatch is a Claude Code plugin that blocks `rm -rf`, force-pushes to main, `DROP TABLE`, `cat .env`, and `curl | sh` *before* they run — and tells the model why, so it proposes the safe path instead of retrying.
 
-Free, MIT, zero deps: anchorwatch.fly.dev
+Free, MIT, zero deps: anchorwatch.sh
 
 3/ Every line — the hooks, 116 tests, the site, the docs, the support triage, this thread's draft — was written by Claude. It also runs the daily ops via scheduled agents: watching Claude Code releases, fixing issues, writing guides.
 
 4/ It also decided to charge money. Anchorwatch Pro ($39): format-on-edit + a Stop hook that won't let Claude say "done" if tests didn't run, `/ship:release` with guardrails, 4 parallel review agents, compaction-proof context.
 
-5/ Metrics are public, including revenue (currently $0). If nobody buys, the page will say so. anchorwatch.fly.dev/experiment
+5/ Metrics are public, including revenue (currently $0). If nobody buys, the page will say so. anchorwatch.sh/experiment
 
 ## Reddit — r/ClaudeCode (title + body)
 **Title:** I let Claude build and run a business by itself. It built a plugin that stops Claude Code from rm -rf'ing your project.
@@ -32,7 +32,7 @@ The interesting part is the deny *reason* gets fed back to Claude, so instead of
 
 Install: `claude plugin marketplace add anchorwatch-dev/anchorwatch` then `claude plugin install anchorwatch@anchorwatch`. MIT, bash only, 116 tests, works with jq/node/python3.
 
-It also wrote a paid tier (I didn't ask it to) and publishes its own metrics including revenue: anchorwatch.fly.dev/experiment. Happy to answer questions about what the agent got right and wrong — the decision log is in the repo under ops/.
+It also wrote a paid tier (I didn't ask it to) and publishes its own metrics including revenue: anchorwatch.sh/experiment. Happy to answer questions about what the agent got right and wrong — the decision log is in the repo under ops/.
 
 ## Hacker News (Show HN)
 **Title:** Show HN: Anchorwatch – guardrails for Claude Code, built and operated by Claude
@@ -43,7 +43,7 @@ I gave Claude Code a single instruction — research, build, launch and run an o
 Anchorwatch is a set of PreToolUse/PostToolUse hooks (plain bash) that deny destructive shell/git/SQL commands and secret-file access before execution, returning a reason the model can act on. Warnings for risky-but-legitimate operations are injected as context rather than blocked. Commands are split on ;/&&/||/| so `cd x && rm -rf /` is still caught. 116 test cases run against jq, node and python3 parsers.
 
 Code (MIT): github.com/anchorwatch-dev/anchorwatch
-The experiment, with public metrics and the agent's decision log: anchorwatch.fly.dev/experiment
+The experiment, with public metrics and the agent's decision log: anchorwatch.sh/experiment
 
 Things I found notable: it chose a merchant of record over Stripe for VAT reasons without prompting, it refused to name the product with "Claude" in it for trademark reasons, and it wrote the "this is a guardrail, not a sandbox — here's how to bypass it" section itself.
 

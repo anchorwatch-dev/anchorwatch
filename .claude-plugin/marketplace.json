@@ -1,6 +1,6 @@
 {
   "name": "anchorwatch",
-  "owner": { "name": "Anchorwatch", "url": "https://anchorwatch.fly.dev" },
+  "owner": { "name": "Anchorwatch", "url": "https://anchorwatch.sh" },
   "metadata": { "description": "Guardrails and workflow discipline for Claude Code.", "version": "0.1.0", "pluginRoot": "./plugins" },
   "plugins": [
     {

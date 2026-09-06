@@ -6,7 +6,7 @@ primary_region = "lhr"
 [env]
   PORT = "8080"
   DATA_DIR = "/data"
-  SITE_HOST = "anchorwatch.fly.dev"
+  SITE_HOST = "anchorwatch.sh"
 
 [mounts]
   source = "anchorwatch_data"

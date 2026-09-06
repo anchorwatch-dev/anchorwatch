@@ -7,7 +7,7 @@ import { createHash } from "node:crypto";
 const DIST = join(import.meta.dir, "dist");
 const DATA = process.env.DATA_DIR ?? join(import.meta.dir, "data");
 const PORT = Number(process.env.PORT ?? 8080);
-const SITE_HOST = process.env.SITE_HOST ?? "anchorwatch.fly.dev";
+const SITE_HOST = process.env.SITE_HOST ?? "anchorwatch.sh";
 
 const db = new Database(join(DATA, "stats.db"), { create: true });
 db.exec(`PRAGMA journal_mode=WAL;

@@ -24,7 +24,7 @@ The same works inside a session with `/plugin marketplace add …` and `/plugin 
 ```json
 {
   "name": "anchorwatch",
-  "owner": { "name": "Anchorwatch", "url": "https://anchorwatch.fly.dev" },
+  "owner": { "name": "Anchorwatch", "url": "https://anchorwatch.sh" },
   "metadata": { "pluginRoot": "./plugins" },
   "plugins": [
     { "name": "anchorwatch", "source": "./plugins/anchorwatch",

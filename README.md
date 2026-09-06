@@ -30,7 +30,7 @@ $ cat .env
 | **Publishing** | | `npm publish`, `gh release create`, `docker push`, `fly deploy`, `terraform apply`, `kubectl delete`, … |
 | **Self-modification** | edits inside `.git/` | edits to Claude Code settings, hooks, MCP config, `.anchorwatch.json`; lockfiles; CI/deploy files; writes outside the project |
 
-Full list with defaults: [docs/rules](https://anchorwatch.fly.dev/docs/rules/).
+Full list with defaults: [docs/rules](https://anchorwatch.sh/docs/rules/).
 
 ## Configure
 
@@ -50,7 +50,7 @@ Levels: `block` · `warn` · `off`. `allow` patterns are POSIX ERE tested agains
 `/anchorwatch:status` · `/anchorwatch:check <command>` (dry run) · `/anchorwatch:allow` · `/anchorwatch:doctor` · `/anchorwatch:rules`
 
 ## How it works
-Five bash scripts on `PreToolUse` (Bash / Edit·Write / Read), `PostToolUse` (Edit·Write) and `SessionStart`. Each reads the hook JSON from stdin and returns a `permissionDecision: deny` with a reason, or `additionalContext` for warnings. Scripts fail open: an error in the guard never blocks your work. Details: [how it works](https://anchorwatch.fly.dev/docs/how-it-works/).
+Five bash scripts on `PreToolUse` (Bash / Edit·Write / Read), `PostToolUse` (Edit·Write) and `SessionStart`. Each reads the hook JSON from stdin and returns a `permissionDecision: deny` with a reason, or `additionalContext` for warnings. Scripts fail open: an error in the guard never blocks your work. Details: [how it works](https://anchorwatch.sh/docs/how-it-works/).
 
 It is a guardrail, not a sandbox. Combine with containers or Claude Code's sandbox for hard isolation.
 
@@ -63,13 +63,13 @@ npx -y @anthropic-ai/claude-code@latest plugin validate ./plugins/anchorwatch --
 claude --plugin-dir ./plugins/anchorwatch # try it in a session
 ```
 
-Repository layout: `plugins/anchorwatch/` (the plugin), `.claude-plugin/marketplace.json` (the marketplace), `site/` (anchorwatch.fly.dev), `ops/` (how this project is operated), `tests/`.
+Repository layout: `plugins/anchorwatch/` (the plugin), `.claude-plugin/marketplace.json` (the marketplace), `site/` (anchorwatch.sh), `ops/` (how this project is operated), `tests/`.
 
 ## Pro
-[Anchorwatch Pro](https://anchorwatch.fly.dev/pro/) adds Quality Gates (format-on-edit, debug-leftover scan, stop-time test gate), Ship (`/commit`, `/pr`, `/release`), Review Crew (four parallel specialist reviewers), Context Keeper (compaction-proof state, `/handoff`, `/resume`), Setup Audit, and Stack Packs. One-time purchase, delivered as a private marketplace.
+[Anchorwatch Pro](https://anchorwatch.sh/pro/) adds Quality Gates (format-on-edit, debug-leftover scan, stop-time test gate), Ship (`/commit`, `/pr`, `/release`), Review Crew (four parallel specialist reviewers), Context Keeper (compaction-proof state, `/handoff`, `/resume`), Setup Audit, and Stack Packs. One-time purchase, delivered as a private marketplace.
 
 ## The experiment
-This project is built and operated by Claude (Fable 5.1) running in Claude Code; a human owns the accounts and approves anything irreversible. Decisions, metrics and costs are public in [`ops/`](ops/) and on the [experiment page](https://anchorwatch.fly.dev/experiment/).
+This project is built and operated by Claude (Fable 5.1) running in Claude Code; a human owns the accounts and approves anything irreversible. Decisions, metrics and costs are public in [`ops/`](ops/) and on the [experiment page](https://anchorwatch.sh/experiment/).
 
 ## License
 MIT. Not affiliated with Anthropic; "Claude" is a trademark of Anthropic, PBC.

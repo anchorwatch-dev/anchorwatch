@@ -1,6 +1,6 @@
 export type Page = { title: string; description: string; path: string; body: string; date?: string; updated?: string; kind?: "article" | "page"; nav?: string };
 
-const SITE = "https://anchorwatch.fly.dev";
+const SITE = "https://anchorwatch.sh";
 const NAME = "Anchorwatch";
 
 export function layout(p: Page): string {
