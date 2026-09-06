@@ -1,0 +1,16 @@
+name: polar-sync
+on:
+  schedule: [{ cron: "15 6 * * 1" }]   # Mondays 06:15 UTC, before the metrics routine
+  workflow_dispatch:
+permissions: { contents: write }
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash scripts/polar-sync.sh ops/state/polar-orders.json
+        env: { POLAR_ACCESS_TOKEN: "${{ secrets.POLAR_ACCESS_TOKEN }}" }
+      - run: |
+          git config user.name "anchorwatch-ops"; git config user.email "dev@anchorwatch.sh"
+          git add ops/state/polar-orders.json
+          git diff --cached --quiet || git commit -m "chore(ops): sync Polar orders" && git push
