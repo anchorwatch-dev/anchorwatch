@@ -46,21 +46,33 @@ description: A free, MIT-licensed Claude Code plugin that blocks destructive com
 <section class="section">
 <div class="section-head"><div><p class="kicker">How it works</p><h2>A hook sits between Claude and your machine.</h2></div><p>Every Bash command and file operation passes through a PreToolUse hook. Denied calls never execute; the reason goes back to Claude.</p></div>
 <div class="flow">
-<svg viewBox="0 0 780 200" role="img" aria-label="Flow: Claude proposes a tool call, Anchorwatch checks it, safe calls run on your machine, blocked calls return to Claude with a reason">
-<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
-<rect class="node" x="18" y="52" width="100" height="76" rx="12"/>
-<text x="68" y="86" text-anchor="middle" font-weight="600">Claude</text><text class="sub" x="68" y="106" text-anchor="middle">proposes a call</text>
-<path class="wire" d="M118 90 H300" marker-end="url(#ah)" style="color:var(--line-2)"/>
-<text class="mono sub" x="209" y="78" text-anchor="middle">git push --force</text>
-<rect class="node mid" x="300" y="40" width="220" height="100" rx="14"/>
-<text class="mid" x="410" y="78" text-anchor="middle" font-weight="600">Anchorwatch</text><text class="mid sub" x="410" y="98" text-anchor="middle">PreToolUse hook · 24 rules · ~20 ms</text><text class="mid sub mono" x="410" y="120" text-anchor="middle">deny · warn · pass</text>
-<path class="wire ok" d="M520 90 H660" marker-end="url(#ah)" style="color:var(--green)"/>
-<text class="sub" x="590" y="78" text-anchor="middle">safe → runs</text>
-<rect class="node" x="662" y="52" width="100" height="76" rx="12"/>
-<text x="712" y="86" text-anchor="middle" font-weight="600">Your repo</text><text class="sub" x="712" y="106" text-anchor="middle">files, git, db</text>
-<path class="wire deny" d="M410 140 C410 190 300 190 118 130" marker-end="url(#ah)" style="color:var(--coral)"/>
-<text class="sub" x="265" y="182" text-anchor="middle">blocked → reason back to Claude, which proposes a safer path</text>
-<circle class="dot a1" r="4"/><circle class="dot ok a2" r="4"/><circle class="dot deny a3" r="4"/>
+<svg viewBox="0 0 800 250" role="img" aria-label="Flow: Claude proposes a tool call, Anchorwatch checks it, safe calls run on your repo, blocked calls return to Claude with a reason">
+<defs>
+<marker id="ah-req" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1L9 5 1 9" class="head req"/></marker>
+<marker id="ah-ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1L9 5 1 9" class="head ok"/></marker>
+<marker id="ah-deny" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1L9 5 1 9" class="head deny"/></marker>
+</defs>
+<!-- wires -->
+<path class="wire req" d="M152 108 H288" marker-end="url(#ah-req)"/>
+<path class="wire ok" d="M522 108 H638" marker-end="url(#ah-ok)"/>
+<path class="wire deny" d="M410 162 V196 Q410 206 400 206 H100 Q90 206 90 196 V158" marker-end="url(#ah-deny)"/>
+<!-- pulses -->
+<g class="pulse p-req"><circle class="halo req" r="9"/><circle class="core req" r="3.5"/></g>
+<g class="pulse p-ok"><circle class="halo ok" r="9"/><circle class="core ok" r="3.5"/></g>
+<g class="pulse p-deny"><circle class="halo deny" r="9"/><circle class="core deny" r="3.5"/></g>
+<!-- nodes -->
+<rect class="node" x="30" y="70" width="120" height="76" rx="12"/>
+<text x="90" y="103" text-anchor="middle" class="t strong">Claude</text><text x="90" y="124" text-anchor="middle" class="t sub">proposes a call</text>
+<rect class="node mid" x="300" y="56" width="220" height="104" rx="14"/>
+<text x="410" y="90" text-anchor="middle" class="t mid strong">Anchorwatch</text>
+<text x="410" y="111" text-anchor="middle" class="t mid sub">PreToolUse hook · 24 rules · ~20 ms</text>
+<text x="410" y="140" text-anchor="middle" class="t mono"><tspan class="k-deny">deny</tspan><tspan class="mid sub"> · </tspan><tspan class="k-warn">warn</tspan><tspan class="mid sub"> · </tspan><tspan class="k-ok">pass</tspan></text>
+<rect class="node" x="650" y="70" width="120" height="76" rx="12"/>
+<text x="710" y="103" text-anchor="middle" class="t strong">Your repo</text><text x="710" y="124" text-anchor="middle" class="t sub">files, git, db</text>
+<!-- labels (haloed so wires never touch the letters) -->
+<text x="220" y="96" text-anchor="middle" class="t mono lbl">git push --force</text>
+<text x="580" y="96" text-anchor="middle" class="t sub lbl">safe → runs</text>
+<text x="250" y="230" text-anchor="middle" class="t sub lbl">blocked → the reason goes back to Claude, which proposes a safer path</text>
 </svg>
 </div>
 <p class="small" style="margin-top:.8rem">Plain bash, no daemon, no network. Guards fail open on their own errors, so a broken parser never blocks your work. It's a guardrail, not a sandbox — <a href="/docs/how-it-works/">read what it does and doesn't do</a>.</p>
