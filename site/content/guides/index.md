@@ -4,6 +4,6 @@ description: Practical, tested guides to Claude Code hooks, guardrails, secrets,
 ---
 # Guides
 
-Written against the current Claude Code documentation and verified in real sessions. Each guide is updated when Claude Code changes.
+<p class="lead">Practical, tested answers to the questions people actually search for about Claude Code hooks, guardrails, secrets, plugins and testing discipline. Written against the current documentation and updated when Claude Code changes.</p>
 
 {{LIST}}

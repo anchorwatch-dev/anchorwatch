@@ -1,4 +1,4 @@
-export type Page = { title: string; description: string; path: string; body: string; date?: string; updated?: string; kind?: "article" | "page"; nav?: string };
+export type Page = { title: string; description: string; path: string; body: string; date?: string; updated?: string; kind?: "article" | "page"; nav?: string; readingTime?: number; kicker?: string; prev?: { title: string; path: string }; next?: { title: string; path: string } };
 
 const SITE = "https://anchorwatch.sh";
 const NAME = "Anchorwatch";
@@ -74,8 +74,9 @@ ${SPRITE}
 </header>
 ${docsNav}
 <main class="${p.kind === "article" ? "article" : "page"}${p.path === "/" ? " home" : ""}">
-${p.kind === "article" ? `<p class="meta">${p.date ? `Published ${fmt(p.date)}` : ""}${p.updated && p.updated !== p.date ? ` · Updated ${fmt(p.updated)}` : ""}</p>` : ""}
-${p.body}
+${p.kind === "article" ? `<header class="article-head"><p class="kicker">${esc(p.kicker ?? "Guide")}</p><h1>${esc(p.title)}</h1><p class="lead">${esc(p.description)}</p><p class="meta">${p.date ? `Published ${fmt(p.date)}` : ""}${p.updated && p.updated !== p.date ? ` · Updated ${fmt(p.updated)}` : ""}${p.readingTime ? ` · ${p.readingTime} min read` : ""}</p></header>` : ""}
+${p.kind === "article" ? p.body.replace(/^\s*<h1[^>]*>[\s\S]*?<\/h1>\s*/, "") : p.body}
+${p.prev || p.next ? `<nav class="docnav">${p.prev ? `<a href="${p.prev.path}">← ${esc(p.prev.title)}</a>` : "<span></span>"}${p.next ? `<a href="${p.next.path}">${esc(p.next.title)} →</a>` : "<span></span>"}</nav>` : ""}
 </main>
 <footer class="foot">
   <div class="foot-brand"><svg class="i" aria-hidden="true"><use href="#i-anchor"/></svg><div><strong>${NAME}</strong><br><span class="muted">The one who stays awake so the ship doesn't drift.</span></div></div>

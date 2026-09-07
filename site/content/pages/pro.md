@@ -6,59 +6,60 @@ description: Six Claude Code plugins that add engineering discipline to Claude C
 
 # Guardrails stop the damage. Pro adds the discipline.
 
-The free plugin stops Claude from doing damage. Pro makes Claude work the way a careful senior engineer works: format everything, run the tests, write real commit messages, get a review before merging, and never lose the thread across a long session.
+<p class="lead">The free plugin stops Claude from doing harm. Pro makes it work the way a careful senior engineer works: format everything, run the tests, write real commits, get a review before merging, and never lose the thread across a long session. Six plugins, one price, every update included.</p>
 
-<div class="pricing">
-<div class="card"><h3>Anchorwatch</h3><div class="price">$0 <small>MIT, forever</small></div>
-<ul><li>24 guardrail rules (11 block, 13 warn)</li><li>Secret file protection + credential scan</li><li><code>/anchorwatch:status</code>, <code>:check</code>, <code>:allow</code>, <code>:doctor</code></li><li>Per-project config</li></ul>
-<p><a class="btn" href="/docs/install/">Install free</a></p></div>
-<div class="card hot"><h3>Anchorwatch Pro</h3><div class="price">$39 <small>one-time · personal license · all updates</small></div>
-<ul><li>Everything in the free plugin</li><li><strong>Quality Gates</strong> — format on edit, debug-leftover scan, stop-time test gate</li><li><strong>Ship</strong> — /commit, /pr, /release, /changelog with guardrails</li><li><strong>Review Crew</strong> — 4 specialist reviewers in parallel</li><li><strong>Context Keeper</strong> — compaction snapshots, /handoff, /resume</li><li><strong>Setup Audit</strong> — A–F grades and top-5 fixes</li><li><strong>Stack Packs</strong> — CLAUDE.md + rules for TS, Next.js, Python, Go</li><li>Private GitHub marketplace: updates arrive like any plugin update</li><li>Issue-based support, triaged daily</li></ul>
-<p><a class="btn primary" href="/go/pro?from=pro">Buy Pro — $39<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
-<p class="small">Payments and VAT handled by Polar (merchant of record). 14-day refund if it doesn't fit your workflow.</p></div>
-<div class="card"><h3>Team</h3><div class="price">$149 <small>one-time · up to 10 developers</small></div>
-<ul><li>Everything in Pro for your whole team</li><li>Shareable via your org's marketplace settings</li><li>Priority issue triage</li></ul>
-<p><a class="btn" href="/go/pro?from=team&tier=team">Buy Team — $149</a></p></div>
+<div class="plans">
+<div class="plan"><h3>Anchorwatch</h3><div class="price">$0 <small>MIT, forever</small></div><p class="who">For anyone using Claude Code.</p>
+<ul><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>24 guardrail rules: 11 block, 13 warn</span></li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>Secret-file protection and credential scanning</span></li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>Per-project configuration</span></li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>Community support on GitHub</span></li></ul>
+<a class="btn" href="/docs/install/">Install free</a></div>
+<div class="plan hot"><h3>Anchorwatch Pro</h3><div class="price">$39 <small>one-time · personal licence · all updates</small></div><p class="who">For developers shipping real products with Claude Code.</p>
+<ul><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>Everything in the free plugin</span></li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>Quality Gates, Ship, Review Crew, Context Keeper, Setup Audit, Stack Packs</span></li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>Private marketplace: updates arrive like any plugin update</span></li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>Issue-based support, triaged daily</span></li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>14-day refund</span></li></ul>
+<a class="btn primary" href="/go/pro?from=pro">Buy Pro — $39<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+<div class="plan"><h3>Anchorwatch Team</h3><div class="price">$149 <small>one-time · up to 10 developers</small></div><p class="who">For teams that want the same discipline on every machine.</p>
+<ul><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>Everything in Pro, for ten people</span></li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>Shareable through your org's marketplace settings</span></li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>Priority issue triage</span></li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>VAT invoice from Polar</span></li></ul>
+<a class="btn" href="/go/pro?from=team&tier=team">Buy Team — $149<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
 </div>
 
-<div id="soon"></div>
+<p class="small">Payments and tax are handled by Polar as merchant of record. Delivery is read access to a private GitHub repository, granted automatically after checkout.</p>
 
-## What each plugin actually does
+## What's in each tier
 
-Each plugin has a full documentation page under [Pro plugins](/docs/pro/), public so you can see exactly what you'd get before buying.
+<div class="compare">
 
-### Quality Gates
-A `PostToolUse` hook runs the formatter your repo already uses (prettier, biome, ruff, black, gofmt, rustfmt — auto-detected, nothing runs if you have none) on every file Claude edits, then scans non-test code for `console.log`, `debugger`, `print(`, `dbg!`, `binding.pry`. A `Stop` hook checks whether code changed since the last test run and whether that run passed; in `remind` mode it tells you and Claude, in `enforce` mode it blocks the first attempt to stop so Claude goes and runs the tests. `/quality-gates:preflight` runs lint → typecheck → tests → build and gives you a scorecard.
-[Full docs →](/docs/pro-quality-gates/)
+| | Free | Pro | Team |
+|---|:---:|:---:|:---:|
+| Guardrails: destructive shell, git and SQL commands blocked before they run | ✓ | ✓ | ✓ |
+| Secret files protected, every write scanned for credentials | ✓ | ✓ | ✓ |
+| Format on edit with your formatter, debug-leftover scan | – | ✓ | ✓ |
+| Stop-time test gate: no "done" until tests ran | – | ✓ | ✓ |
+| `/ship:commit`, `/ship:pr`, `/ship:release`, `/ship:changelog` | – | ✓ | ✓ |
+| Four parallel reviewers with one ranked report | – | ✓ | ✓ |
+| Compaction snapshots, `/handoff`, `/resume` | – | ✓ | ✓ |
+| Setup audit with graded fixes | – | ✓ | ✓ |
+| Stack packs for TypeScript, Next.js, Python, Go | – | ✓ | ✓ |
+| Seats | 1 | 1 | 10 |
+| Support | community | daily triage | priority |
 
-### Ship
-`/ship:commit` reads the *actual diff*, splits unrelated changes, and writes Conventional Commits — never `--no-verify`, never `git add -A`. `/ship:pr` pushes, fills your PR template (or a good default: summary, changes, test plan, risks), and links issues. `/ship:release` runs gates (clean tree, default branch, tests green), infers the semver bump from the commits, writes the CHANGELOG section, bumps every version file, and only after you confirm: commits, tags, pushes, and creates the GitHub release.
-[Full docs →](/docs/pro-ship/)
+</div>
 
-### Review Crew
-Four subagents — `security-reviewer`, `perf-reviewer`, `test-gap-finder`, `contract-reviewer` — each with a detailed checklist and a strict output format (severity, file:line, evidence, failure scenario, fix). `/review-crew:review` runs them in parallel on your working tree, a git range, or a PR number, de-duplicates and ranks the findings, and gives a verdict. `--fix` applies the critical and high fixes and re-runs the tests.
-[Full docs →](/docs/pro-review-crew/)
+## The six plugins
 
-### Context Keeper
-A `PreCompact` hook writes a snapshot (branch, uncommitted changes, diff stat, recent commits, recently modified files, your HANDOFF.md) and a `SessionStart` hook re-injects it after compaction or resume, so Claude doesn't "forget" what it was doing halfway through. `/context-keeper:handoff` writes a precise HANDOFF.md; `/context-keeper:resume` reconciles it with git and proposes the next step.
-[Full docs →](/docs/pro-context-keeper/)
+<div class="features">
+<div class="card"><span class="ic"><svg class="i" aria-hidden="true"><use href="#i-cog"/></svg></span><h3>Quality Gates</h3><p>Runs your formatter after every edit, flags <code>console.log</code>, <code>debugger</code> and <code>print(</code> left in real code, and won't let Claude say "done" while tests haven't run or last failed. Remind or enforce mode.</p><a class="more" href="/docs/pro-quality-gates/">Read the docs →</a></div>
+<div class="card"><span class="ic"><svg class="i" aria-hidden="true"><use href="#i-git"/></svg></span><h3>Ship</h3><p>Conventional commits written from the real diff, pull requests with a summary and test plan, and semver releases with CHANGELOG, tag and GitHub release, each behind a confirmation gate.</p><a class="more" href="/docs/pro-ship/">Read the docs →</a></div>
+<div class="card"><span class="ic"><svg class="i" aria-hidden="true"><use href="#i-review"/></svg></span><h3>Review Crew</h3><p>Security, performance, test-gap and contract reviewers run in parallel on your diff and return one ranked report with file:line evidence, a failure scenario and a fix for every finding.</p><a class="more" href="/docs/pro-review-crew/">Read the docs →</a></div>
+<div class="card"><span class="ic"><svg class="i" aria-hidden="true"><use href="#i-brain"/></svg></span><h3>Context Keeper</h3><p>Snapshots branch, changes and recent files before context compaction and restores them after, so long sessions don't lose the thread. <code>/handoff</code> writes a precise handover; <code>/resume</code> picks it up.</p><a class="more" href="/docs/pro-context-keeper/">Read the docs →</a></div>
+<div class="card"><span class="ic"><svg class="i" aria-hidden="true"><use href="#i-audit"/></svg></span><h3>Setup Audit</h3><p>Grades your CLAUDE.md, permissions, hooks, rules, skills, MCP servers, memory and repo hygiene A–F against a published rubric, then lists the five fixes worth doing first.</p><a class="more" href="/docs/pro-setup-audit/">Read the docs →</a></div>
+<div class="card"><span class="ic"><svg class="i" aria-hidden="true"><use href="#i-stack"/></svg></span><h3>Stack Packs</h3><p>Detects your stack and writes a CLAUDE.md filled with your real commands, versions and layout, plus path-scoped rules. Merges with what you already have instead of overwriting it.</p><a class="more" href="/docs/pro-stack-packs/">Read the docs →</a></div>
+</div>
 
-### Setup Audit
-`/setup-audit:run` inventories CLAUDE.md, `.claude/settings.json` (secrets masked), hooks, rules, skills, agents, MCP servers, memory, and repo hygiene (including a spot-check of git history for leaked keys), grades each area A–F against a published rubric, and lists the top five fixes ordered by risk × ease. `--apply` makes the safe local ones.
-[Full docs →](/docs/pro-setup-audit/)
+## Questions
 
-### Stack Packs
-`/stack-packs:init` detects your stack and writes a CLAUDE.md filled with *your* real commands, package manager, versions and layout, plus path-scoped `.claude/rules`. If you already have a CLAUDE.md it merges and flags contradictions instead of overwriting.
-[Full docs →](/docs/pro-stack-packs/)
-
-## FAQ
-
-**How is Pro delivered?** After purchase Polar grants your GitHub account read access to the private `anchorwatch-pro` repository. You add it as a marketplace once (`claude plugin marketplace add anchorwatch-dev/anchorwatch-pro`) and install plugins normally; updates flow through the marketplace like any other plugin. Team licences: the buyer gets access immediately and opens an issue titled "Team seats" listing up to nine more GitHub usernames; they're added within a day.
-
-**Which Claude Code version?** Current releases (2.1+). On older 2.0 versions the free plugin still blocks the same commands, but the block surfaces as a permission prompt rather than a written reason Claude can act on. When Claude Code changes hook or plugin behaviour, Pro is updated — usually within a day — because tracking those changes is the operator's daily job.
-
-**Does it send my code anywhere?** No. Everything runs locally in hooks and skills. This site collects anonymous pageviews (see [privacy](/privacy/)); the plugins collect nothing.
-
-**Refunds?** 14 days, no questions, via Polar.
-
-**Team licences and invoices?** The Team tier covers up to 10 developers; Polar issues VAT invoices automatically. Need more seats? Open an issue.
+<div class="faq">
+<details><summary>How is Pro delivered?</summary><p>After checkout, Polar's customer portal asks you to connect GitHub, then grants that account read access to the private <code>anchorwatch-pro</code> repository. You add it as a marketplace once with <code>claude plugin marketplace add anchorwatch-dev/anchorwatch-pro</code> and install plugins normally. Updates flow through the marketplace like any other plugin.</p></details>
+<details><summary>How do team seats work?</summary><p>The buyer gets access immediately and opens an issue titled "Team seats" listing up to nine more GitHub usernames. They're added within a day.</p></details>
+<details><summary>Which Claude Code version do I need?</summary><p>Current releases, 2.1 and later. When Claude Code changes hook or plugin behaviour, Pro is updated, usually within a day, because tracking those changes is the operator's daily job.</p></details>
+<details><summary>Does it send my code anywhere?</summary><p>No. Everything runs locally as hooks and skills. The plugins make no network requests. This site collects anonymous pageviews; see the <a href="/privacy/">privacy page</a>.</p></details>
+<details><summary>What if it doesn't fit my workflow?</summary><p>Fourteen-day refund through Polar, no questions asked. Access to the repository is removed when a refund is issued.</p></details>
+<details><summary>Can I see the code before buying?</summary><p>The free plugin is fully open source and shares the same style, test approach and hook design. The Pro documentation describes every hook, command and configuration option in full.</p></details>
+</div>

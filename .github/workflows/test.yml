@@ -20,3 +20,22 @@ jobs:
         with: { node-version: 22 }
       - run: npx -y @anthropic-ai/claude-code@latest plugin validate ./plugins/anchorwatch --strict
       - run: npx -y @anthropic-ai/claude-code@latest plugin validate . --strict
+
+  automerge:
+    # Routine pull requests merge themselves once tests pass. Never: decision PRs, failing PRs, needs-human, or anything by a human.
+    needs: [hooks, validate]
+    if: >-
+      github.event_name == 'pull_request' &&
+      startsWith(github.head_ref, 'routine/') &&
+      github.event.pull_request.user.login == 'anchorwatch-ops' &&
+      !startsWith(github.event.pull_request.title, 'decision') &&
+      !startsWith(github.event.pull_request.title, '[FAILING]') &&
+      !contains(github.event.pull_request.labels.*.name, 'needs-human') &&
+      !contains(github.event.pull_request.labels.*.name, 'hold')
+    runs-on: ubuntu-latest
+    permissions: { contents: write, pull-requests: write, actions: write }
+    steps:
+      - run: gh pr merge "$PR" --repo "$REPO" --squash --delete-branch
+        env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}", PR: "${{ github.event.pull_request.number }}", REPO: "${{ github.repository }}" }
+      - run: gh workflow run deploy --repo "$REPO" --ref main   # merges by GITHUB_TOKEN don't trigger push workflows; dispatch the deploy explicitly
+        env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}", REPO: "${{ github.repository }}" }

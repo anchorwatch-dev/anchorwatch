@@ -25,6 +25,7 @@ function parse(md: string): { front: Front; body: string } {
 function out(path: string, html: string) { const dir = join(DIST, path); mkdirSync(dir, { recursive: true }); writeFileSync(join(dir, "index.html"), html); }
 
 const urls: { loc: string; lastmod?: string }[] = [];
+const pages: { page: Page; sub: string; slug: string; front: Front }[] = [];
 const guides: (Front & { path: string })[] = [];
 const docs: (Front & { path: string })[] = [];
 
@@ -36,7 +37,10 @@ function renderDir(sub: string, prefix: string, kind: "article" | "page", collec
     const { front, body } = parse(readFileSync(join(dir, f), "utf8"));
     const path = slug === "index" ? prefix : `${prefix}${slug}/`;
     const html = marked.parse(body) as string;
-    const page: Page = { title: front.title ?? slug, description: front.description ?? "", path, body: html, date: front.date, updated: front.updated, kind: slug === "index" ? "page" : kind };
+    const words = body.split(/\s+/).length;
+    const page: Page = { title: front.title ?? slug, description: front.description ?? "", path, body: html, date: front.date, updated: front.updated, kind: slug === "index" ? "page" : kind, readingTime: kind === "article" ? Math.max(1, Math.round(words / 220)) : undefined, kicker: front.kicker };
+    if (kind === "article") (page as any)._words = words;
+    pages.push({ page, sub, slug, front });
     out(path, layout(page));
     if (slug !== "thanks") urls.push({ loc: SITE + path, lastmod: front.updated ?? front.date });
     if (collect && slug !== "index" && !(sub === "docs" && slug.startsWith("pro-"))) collect.push({ ...front, path });
@@ -49,13 +53,32 @@ renderDir("pages", "/", "page");
 renderDir("guides", "/guides/", "article", guides);
 renderDir("docs", "/docs/", "page", docs);
 
+// Docs prev/next in a fixed order
+const DOC_ORDER = ["install", "configuration", "rules", "how-it-works", "pro", "pro-quality-gates", "pro-ship", "pro-review-crew", "pro-context-keeper", "pro-setup-audit", "pro-stack-packs"];
+const docPages = DOC_ORDER.map(sl => pages.find(p => p.sub === "docs" && p.slug === sl)).filter(Boolean) as typeof pages;
+docPages.forEach((d, i) => {
+  const prev = docPages[i - 1]; const next = docPages[i + 1];
+  d.page.prev = prev ? { title: prev.page.title, path: prev.page.path } : undefined;
+  d.page.next = next ? { title: next.page.title, path: next.page.path } : undefined;
+  out(d.page.path, layout(d.page));
+});
+
 function list(items: (Front & { path: string })[], withDates = true) {
-  return `<ul class="cards">${items.sort((a, b) => (b.date ?? "").localeCompare(a.date ?? "")).map(i => `<li><a href="${i.path}"><strong>${esc(i.title ?? i.path)}</strong><span>${esc(i.description ?? "")}</span>${withDates && i.date ? `<time>${i.date}</time>` : ""}</a></li>`).join("")}</ul>`;
+  return `<ul class="cards">${items.sort((a, b) => (b.date ?? "").localeCompare(a.date ?? "")).map(i => { const pg = pages.find(p => p.page.path === i.path); const rt = pg?.page.readingTime; return `<li><a href="${i.path}"><span class="kick">${withDates ? `Guide${i.date ? " · " + i.date : ""}${rt ? " · " + rt + " min" : ""}` : "Docs"}</span><strong>${esc(i.title ?? i.path)}</strong><span>${esc(i.description ?? "")}</span><span class="arrow">Read →</span></a></li>`; }).join("")}</ul>`;
 }
 // Inject lists into index pages that contain the placeholder
-for (const [path, items, dates] of [["/guides/", guides, true], ["/docs/", docs, false]] as const) {
-  const f = join(DIST, path, "index.html");
-  if (existsSync(f)) writeFileSync(f, readFileSync(f, "utf8").replace("<p>{{LIST}}</p>", list([...items], dates)));
+{
+  const f = join(DIST, "guides", "index.html");
+  const sorted = [...guides].sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
+  const feat = sorted[0];
+  const featured = feat ? `<section class="feature-guide"><div><p class="kicker">Latest guide</p><h2>${esc(feat.title ?? "")}</h2><p>${esc(feat.description ?? "")}</p><a class="btn primary" href="${feat.path}">Read it<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a></div><div class="term"><div class="term-bar"><i></i><i></i><i></i><span>hooks.json</span></div><div class="term-body"><span class="c">{</span> <span class="p">"PreToolUse"</span>: [{ <span class="p">"matcher"</span>: <span class="ok">"Bash"</span>,
+    <span class="p">"hooks"</span>: [{ <span class="p">"type"</span>: <span class="ok">"command"</span>,
+      <span class="p">"command"</span>: <span class="ok">"bash guard.sh"</span> }] }] <span class="c">}</span>
+
+<span class="c"># every guide ends with something you can paste</span></div></div></section>` : "";
+  if (existsSync(f)) writeFileSync(f, readFileSync(f, "utf8").replace("<p>{{LIST}}</p>", featured + list(sorted.slice(1), true)));
+  const d = join(DIST, "docs", "index.html");
+  if (existsSync(d)) writeFileSync(d, readFileSync(d, "utf8").replace("<p>{{LIST}}</p>", ""));
 }
 // Home also shows latest 3 guides
 const home = join(DIST, "index.html");
