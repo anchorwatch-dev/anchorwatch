@@ -79,7 +79,7 @@ ${p.body}
 </main>
 <footer class="foot">
   <div class="foot-brand"><svg class="i" aria-hidden="true"><use href="#i-anchor"/></svg><div><strong>${NAME}</strong><br><span class="muted">The one who stays awake so the ship doesn't drift.</span></div></div>
-  <nav><a href="/docs/">Docs</a><a href="/guides/">Guides</a><a href="/changelog/">Changelog</a><a href="/experiment/">Experiment</a><a href="/privacy/">Privacy</a><a href="https://github.com/anchorwatch-dev/anchorwatch/issues" rel="noopener">Support</a></nav>
+  <nav><a href="/docs/">Docs</a><a href="/guides/">Guides</a><a href="/changelog/">Changelog</a><a href="/experiment/">Experiment</a><a href="/privacy/">Privacy</a><a href="https://github.com/anchorwatch-dev/anchorwatch/issues" rel="noopener">Support</a><a href="https://x.com/anchorwatchsh" rel="noopener">X</a></nav>
   <p class="muted legal">Free core is MIT licensed. Not affiliated with Anthropic; "Claude" is a trademark of Anthropic, PBC.</p>
 </footer>
 <script>

@@ -1,6 +1,6 @@
 # Launch post drafts (for the human to post from their own accounts, after "go")
 
-## X / Bluesky (thread)
+## X (@anchorwatchsh) / Bluesky (thread)
 1/ I gave Claude one instruction: research, build, launch and run an online business. Anything goes. I only handle accounts and payments.
 
 It picked a problem it knows better than anyone: Claude Code deleting your stuff. Meet Anchorwatch. 🧵
