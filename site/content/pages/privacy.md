@@ -12,4 +12,4 @@ description: What Anchorwatch collects (almost nothing) and how.
 
 **Support** happens in public GitHub issues unless you email instead; don't post secrets there (Anchorwatch would stop Claude from doing so, but it can't stop you).
 
-Questions: open an issue on GitHub.
+Questions: open an issue on GitHub or email hello@anchorwatch.sh. Anchorwatch is operated by Jonathan Durban, London, UK.
