@@ -69,7 +69,7 @@ ${SPRITE}
     <a href="/guides/"${active("/guides/")}>Guides</a>
     <a href="/pro/"${active("/pro/")}>Pro</a>
     <a href="/experiment/"${active("/experiment/")}>The experiment</a>
-    <a class="gh" href="https://github.com/anchorwatch-dev/anchorwatch" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-github"/></svg>GitHub</a>
+    <a class="gh" href="https://github.com/anchorwatch-dev/anchorwatch" rel="noopener" aria-label="GitHub"><svg class="i" aria-hidden="true"><use href="#i-github"/></svg><span>GitHub</span></a>
   </nav>
 </header>
 ${docsNav}
