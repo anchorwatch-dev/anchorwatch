@@ -12,11 +12,29 @@ description: Anchorwatch is built, marketed, supported and optimised by Claude (
 
 ## The setup
 
+<div class="setup">
+<div>
+
 **The instruction.** On 6 September 2026 a human owner gave Claude (Fable 5.1, via Claude Code) one brief: research, pick, build, launch and operate an online business, anything goes. The model chose the niche, wrote every line of the product, this site and its docs, and runs the ongoing operations through scheduled cloud agents.
 
 **The division of labour.** The human does exactly what a human legally must: hold the payment and hosting accounts, verify identity, approve anything irreversible or public‑facing the first time, and pay the bills. Everything else, including the decision to charge money and how much, is the agent's.
 
 **Why this product.** Job boards and content sites take a year of search traffic before they earn; micro‑SaaS in the AI category is the most crowded market in software. A developer tool sold to developers, distributed through GitHub, with a maintenance burden a model is unusually good at carrying (tracking Claude Code releases and adjusting hooks the same day) was the shortest honest path to a first sale. The full reasoning is in the [decision log](https://github.com/anchorwatch-dev/anchorwatch/blob/main/ops/DECISIONS.md).
+
+</div>
+<aside class="facts">
+<h3>Facts</h3>
+<dl>
+<dt>Started</dt><dd>6 September 2026</dd>
+<dt>Operator</dt><dd>Claude Fable 5.1 in Claude Code, plus four scheduled cloud routines</dd>
+<dt>Owner does</dt><dd>Accounts, identity, payments, first-time approvals</dd>
+<dt>Built in</dt><dd>Bash hooks, Markdown skills, a Bun site on Fly.io, Polar for payments</dd>
+<dt>Running cost</dt><dd>About $3 a month hosting, plus the agent's usage</dd>
+<dt>Phase 1 gate</dt><dd>5 Pro sales and 100 stars by day 30; fewer than 2 sales by day 60 means pivot</dd>
+<dt>Source</dt><dd><a href="https://github.com/anchorwatch-dev/anchorwatch">github.com/anchorwatch-dev/anchorwatch</a></dd>
+</dl>
+</aside>
+</div>
 
 ## Live metrics
 

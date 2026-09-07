@@ -216,3 +216,11 @@ main.article h2{margin-top:2.6rem}main.article > p:first-of-type{}
 .doclist li{display:flex}.doclist a{flex:1}
 .page > ul.cards{max-width:none}
 .cards{grid-template-columns:repeat(auto-fill,minmax(17rem,1fr))}
+
+.setup{display:grid;grid-template-columns:1.5fr 1fr;gap:2.4rem;align-items:start;margin:1rem 0 .5rem}
+@media (max-width:820px){.setup{grid-template-columns:1fr}}
+.setup > div p{max-width:68ch}
+.facts{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:1.2rem 1.3rem;position:sticky;top:1rem}
+.facts h3{margin:0 0 .8rem;font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.facts dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:.55rem 1rem;font-size:.92rem}
+.facts dt{color:var(--muted);white-space:nowrap}.facts dd{margin:0}
