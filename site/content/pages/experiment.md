@@ -41,7 +41,7 @@ description: Anchorwatch is built, marketed, supported and optimised by Claude (
 <div class="panel">
 <div class="bigstats"><div><b id="m-uv30">…</b><span>visits, 30 days (unique per day)</span></div><div><b id="m-pv30">…</b><span>pageviews, 30 days</span></div><div><b id="m-today">…</b><span>visitors today</span></div><div><b id="m-clicks">…</b><span>checkout clicks, 30 days</span></div></div>
 <div class="chart-wrap">
-<div><h3>Daily visits (unique per day)</h3><div class="chart" id="chart"><svg viewBox="0 0 600 170" role="img" aria-label="Daily unique visitors"><text class="empty" x="300" y="90" text-anchor="middle">Loading…</text></svg></div></div>
+<div><h3>Daily visits, last 14 days</h3><div class="chart" id="chart"><svg viewBox="0 0 600 190" role="img" aria-label="Daily visits, last 14 days"><text class="empty" x="300" y="90" text-anchor="middle">Loading…</text></svg><div class="tip" id="tip" hidden></div></div><p class="chart-note">One bar per day, unique visitors that day. Hover a bar for pageviews.</p></div>
 <div><h3>Top referrers, 30 days</h3><table class="refs" id="refs"><tr><th>Source</th><th>Views</th></tr></table></div>
 </div>
 </div>
@@ -92,12 +92,14 @@ const t=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
 t('m-pv30',s.last30.pageviews.toLocaleString());t('m-uv30',s.last30.uniques.toLocaleString());t('m-today',s.today.uniques.toLocaleString());
 t('m-clicks',(s.events||[]).filter(e=>e.name==='checkout_click').reduce((a,e)=>a+e.n,0).toLocaleString());
 t('day',Math.max(1,Math.floor((Date.now()-Date.parse('2026-09-07T00:00:00Z'))/864e5)+1));
-const days=s.daily||[];const svg=document.querySelector('#chart svg');
-if(!days.length){svg.innerHTML='<text class="empty" x="300" y="90" text-anchor="middle">No visits recorded yet.</text>';}
-else{const W=600,H=170,L=34,R=8,T=12,B=28;const max=Math.max(1,...days.map(d=>d.uniques));const n=days.length;const bw=Math.max(4,Math.min(28,(W-L-R)/n*0.7));const step=(W-L-R)/n;
-let g='';const ticks=[0,Math.ceil(max/2),max];ticks.forEach(v=>{const y=T+(H-T-B)*(1-v/max);g+=`<line class="axis" x1="${L}" x2="${W-R}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}"/><text x="${L-6}" y="${(y+4).toFixed(1)}" text-anchor="end">${v}</text>`;});
-days.forEach((d,i)=>{const h=(H-T-B)*(d.uniques/max);const x=L+i*step+(step-bw)/2;const y=T+(H-T-B)-h;g+=`<rect class="bar" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(2,h).toFixed(1)}" rx="2"><title>${d.day}: ${d.uniques} visitors, ${d.pageviews} views</title></rect>`;});
-g+=`<text x="${L}" y="${H-8}">${days[0].day.slice(5)}</text><text x="${W-R}" y="${H-8}" text-anchor="end">${days[n-1].day.slice(5)}</text>`;svg.innerHTML=g;}
+const byDay=Object.fromEntries((s.daily||[]).map(d=>[d.day,d]));const days=[];for(let i=13;i>=0;i--){const dt=new Date(Date.now()-i*864e5);const key=dt.toISOString().slice(0,10);const d=byDay[key]||{day:key,uniques:0,pageviews:0};days.push({...d,label:dt.toLocaleDateString('en-GB',{day:'numeric',month:'short'}),dow:dt.toLocaleDateString('en-GB',{weekday:'short'})});}
+const svg=document.querySelector('#chart svg');const W=600,H=190,L=34,R=10,T=14,B=40;const max=Math.max(1,...days.map(d=>d.uniques));const n=days.length;const step=(W-L-R)/n;const bw=Math.min(30,step*0.62);
+let g='';const ticks=max<4?[0,max]:[0,Math.round(max/2),max];ticks.forEach(v=>{const y=T+(H-T-B)*(1-v/max);g+=`<line class="axis" x1="${L}" x2="${W-R}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}"/><text x="${L-6}" y="${(y+4).toFixed(1)}" text-anchor="end">${v}</text>`;});
+days.forEach((d,i)=>{const h=(H-T-B)*(d.uniques/max);const cx=L+i*step+step/2;const x=cx-bw/2;const y=T+(H-T-B)-h;g+=`<rect class="bar${d.uniques?'':' zero'}" data-i="${i}" x="${x.toFixed(1)}" y="${(d.uniques?y:T+(H-T-B)-2).toFixed(1)}" width="${bw.toFixed(1)}" height="${(d.uniques?Math.max(2,h):2).toFixed(1)}" rx="2"/>`;if(i%2===(n-1)%2)g+=`<text x="${cx.toFixed(1)}" y="${H-22}" text-anchor="middle">${d.label}</text>`;g+=`<text class="dow" x="${cx.toFixed(1)}" y="${H-8}" text-anchor="middle">${i%2===(n-1)%2?d.dow:''}</text>`;});
+svg.innerHTML=g;
+const tip=document.getElementById('tip');const wrap=document.getElementById('chart');
+svg.addEventListener('mousemove',e=>{const r=e.target.closest('rect.bar');if(!r){tip.hidden=true;svg.querySelectorAll('.bar.on').forEach(b=>b.classList.remove('on'));return;}const d=days[+r.dataset.i];tip.innerHTML=`<b>${d.dow} ${d.label}</b><br>${d.uniques} visit${d.uniques===1?'':'s'} · ${d.pageviews} pageview${d.pageviews===1?'':'s'}`;tip.hidden=false;const box=wrap.getBoundingClientRect();tip.style.left=Math.min(box.width-150,Math.max(0,e.clientX-box.left+12))+'px';tip.style.top=(e.clientY-box.top-48)+'px';svg.querySelectorAll('.bar.on').forEach(b=>b.classList.remove('on'));r.classList.add('on');});
+svg.addEventListener('mouseleave',()=>{tip.hidden=true;svg.querySelectorAll('.bar.on').forEach(b=>b.classList.remove('on'));});
 const r=(s.referrers||[]).slice(0,6);const tb=document.getElementById('refs');
 if(r.length){r.forEach(x=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${x.ref.replace(/</g,'&lt;')}</td><td>${x.n}</td>`;tb.appendChild(tr);});}
 else{const tr=document.createElement('tr');tr.innerHTML='<td colspan="2">No referrers yet — all traffic is direct.</td>';tb.appendChild(tr);}
