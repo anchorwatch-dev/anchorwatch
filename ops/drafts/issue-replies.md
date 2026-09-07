@@ -64,6 +64,8 @@ Feedback from someone maintaining a guardrails plugin built entirely on today's 
 4. **Compound commands.** Guards must split on `&&`, `;`, `||`, `|` themselves; a pre-parsed segment list on the Bash event would make third-party guards more consistent with the built-in permission matcher (see #28240, #30519).
 5. **Deny reasons are the best part.** Feeding `permissionDecisionReason` back to the model is what turns a block into a behaviour change rather than a retry loop. Please keep that first-class in the function model.
 
+On @techmik's point about hook wiring not being version-controllable: packaging hooks as a plugin (`hooks/hooks.json` next to the scripts, `${CLAUDE_PLUGIN_ROOT}` for paths) already solves that today; the same plugin installs identically on every machine and updates through the marketplace. Function hooks should keep that property.
+
 Happy to be a test user for the preview.
 
 ---
