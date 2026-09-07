@@ -50,3 +50,36 @@ The segment-splitting logic (on `&&`, `||`, `;`, `|`) is the reusable part. I ma
 ## Also worth a reply once posted (find fresh threads weekly)
 - r/ClaudeAI and r/ClaudeCode: search "deleted", "reset --hard", ".env", "force push" and sort by new; reply only where the thread is under a week old.
 - Hacker News: comments on any "AI agent deleted my …" story; those get big traffic.
+
+---
+
+## anthropics/claude-code #91870 — Function Hooks proposal (open, Anthropic asking for feedback)
+https://github.com/anthropics/claude-code/issues/91870
+
+Feedback from someone maintaining a guardrails plugin built entirely on today's `PreToolUse`/`PostToolUse` command hooks (Anchorwatch, MIT). The proposal looks great; here's what the current hook system makes hard, in case it helps prioritise:
+
+1. **Hooks fail open, invisibly.** If my script crashes, times out, or the machine has no `jq`/`node`/`python3`, the tool call proceeds and nothing tells anyone the guard didn't fire. I work around it with a SessionStart hook that announces "active"/"INACTIVE", but a first-party notion of hook health (or an opt-in fail-closed mode per hook) would be far better than every plugin inventing its own.
+2. **Untyped stdin JSON.** Every command hook re-implements parsing with a jq → node → python3 fallback chain. Typed inputs in a function hook remove that whole class of bugs.
+3. **No dry-run harness.** Testing a hook today means hand-crafting the JSON envelope. A `claude hooks test <event> --input file.json` that runs the real dispatch would let plugin authors ship CI-verified hooks.
+4. **Compound commands.** Guards must split on `&&`, `;`, `||`, `|` themselves; a pre-parsed segment list on the Bash event would make third-party guards more consistent with the built-in permission matcher (see #28240, #30519).
+5. **Deny reasons are the best part.** Feeding `permissionDecisionReason` back to the model is what turns a block into a behaviour change rather than a retry loop. Please keep that first-class in the function model.
+
+Happy to be a test user for the preview.
+
+---
+
+## anthropics/claude-code #30519 — permissions matching is broken (open)
+https://github.com/anthropics/claude-code/issues/30519
+
+@m13v's point about hand-rolled hooks failing quietly is the right criticism and it's worth being precise about it. A PreToolUse guard *does* fail open on its own errors (a hook that exits non-zero, times out, or can't parse stdin lets the call through). The mitigations I've found that actually work: (a) no runtime dependencies beyond bash plus a parser fallback chain, (b) a test suite that feeds the exact stdin envelope for every rule and runs in CI on macOS and Linux, and (c) a SessionStart hook that prints "active, N rules" or a loud INACTIVE warning, so absence is visible instead of silent. That's still not a permission system, and it doesn't replace `deny` rules; it complements them for the cases the matcher can't express (protected branches, `DELETE` without `WHERE`, `.env` mid-command).
+
+Disclosure: I maintain that guard as a plugin (Anchorwatch, MIT). The tests are in the repo if anyone wants to reuse the envelope fixtures: https://github.com/anchorwatch-dev/anchorwatch/blob/main/tests/run.sh
+
+---
+
+## anthropics/claude-code #2544 — CLAUDE.md mandatory rules ignored (open)
+https://github.com/anthropics/claude-code/issues/2544
+
+A pattern that has held up across long sessions: sort your CLAUDE.md rules into two piles. Rules the model must *judge* (naming, architecture, when to ask) stay in CLAUDE.md; those degrade with context length as junaidtitan describes, and nothing fixes that fully. Rules that are *checkable* ("run the tests before finishing", "never touch .env", "no force push to main", "commit message format") should not be instructions at all; they should be hooks, which run every time regardless of what the model is paying attention to. For the list in this issue: mandatory testing → a Stop hook that blocks the turn until a test command has run; commit format → a PreToolUse hook on `git commit`; documentation-before-code → a PreToolUse hook on Edit that checks for the doc file.
+
+Anthropic's own guidance says the same ("for actions that must happen every single time, use hooks"). I wrote up the mechanics here, including the exit-code and JSON-decision details: https://anchorwatch.sh/guides/claude-code-hooks-guide/ (disclosure: I maintain the plugin on that site; the guide stands on its own).

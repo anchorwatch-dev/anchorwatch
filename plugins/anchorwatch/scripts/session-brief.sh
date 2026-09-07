@@ -2,6 +2,10 @@
 # Anchorwatch — SessionStart: one-line status so Claude knows guardrails are active.
 . "$(dirname "$0")/lib.sh"
 aw_read_input
+if [ "$(aw_parser)" = none ]; then
+  printf 'WARNING: Anchorwatch is installed but INACTIVE — no JSON parser found (needs jq, node, or python3). None of its guardrails will run until one is installed (brew install jq / apt install jq). Tell the user this at the start of your first reply.\n'
+  exit 0
+fi
 n_block=0; n_warn=0
 for pair in rm-recursive-dangerous:block rm-recursive:warn git-force-push-protected:block git-force-push:warn git-push-delete:warn git-destructive:block sql-destructive:block pipe-to-shell:block disk-destroy:block perm-broad:block env-read:block env-dump:warn publish:warn sudo:warn kill-broad:warn system-config:warn secret-files:block git-internals:block lockfiles:warn self-config:warn infra-files:warn outside-project:warn secret-read:block secret-scan:warn; do
   r="${pair%%:*}"; d="${pair##*:}"

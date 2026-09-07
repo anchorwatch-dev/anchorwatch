@@ -13,7 +13,7 @@ AW_PARSER=""
 # Pick the JSON parser once. AW_JSON_PARSER=jq|node|python3 overrides auto-detection.
 aw_parser() {
   if [ -z "$AW_PARSER" ]; then
-    case "${AW_JSON_PARSER:-}" in jq|node|python3) AW_PARSER="$AW_JSON_PARSER" ;; esac
+    case "${AW_JSON_PARSER:-}" in jq|node|python3|none) AW_PARSER="$AW_JSON_PARSER" ;; esac
     if [ -z "$AW_PARSER" ]; then
       if command -v jq >/dev/null 2>&1; then AW_PARSER=jq
       elif command -v node >/dev/null 2>&1; then AW_PARSER=node

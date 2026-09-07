@@ -193,6 +193,9 @@ echo "== session-brief =="
 out="$(printf '{"hook_event_name":"SessionStart","cwd":"%s"}' "$TMP/proj" | bash "$S/session-brief.sh")"
 if printf '%s' "$out" | grep -q 'Anchorwatch guardrails active'; then pass=$((pass+1)); echo "  ok   $out"; else fail=$((fail+1)); echo "  FAIL session-brief: $out"; fi
 
+out="$(printf '{"hook_event_name":"SessionStart","cwd":"%s"}' "$TMP/proj" | AW_JSON_PARSER=none PATH="$TMP/emptybin" bash "$S/session-brief.sh" 2>/dev/null)"
+if printf '%s' "$out" | grep -q "INACTIVE"; then pass=$((pass+1)); echo "  ok   session-brief warns loudly when no JSON parser exists"; else fail=$((fail+1)); echo "  FAIL no-parser warning missing: $out"; fi
+
 rm -rf "$TMP"
 echo
 echo "passed=$pass failed=$fail"
