@@ -7,3 +7,4 @@ site/data/*.db
 .env.*
 !.env.example
 site/data/
+!ops/state/*.log
