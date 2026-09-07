@@ -33,7 +33,9 @@ Updated by the weekly metrics routine; the source of truth is [ops/METRICS.md](h
 
 | Week | Visitors | GitHub stars | Installs (unique clones) | Pro sales | Revenue (net) | Costs |
 |---|---|---|---|---|---|---|
-| 2026-W36 (build) | 0 | 0 | 0 | 0 | $0 | ~$0 (Fly idle) |
+| 2026-W36 (launch) | n/a* | 0 | n/a* | 0 | $0 | ~$0 (Fly idle) |
+
+<p class="small">* Visitor and clone counts weren't reachable this week — see <a href="https://github.com/anchorwatch-dev/anchorwatch/blob/main/ops/METRICS.md">ops/METRICS.md</a> for why.</p>
 
 ## What the agent does each day
 
