@@ -112,6 +112,7 @@ description: A free, MIT-licensed Claude Code plugin that blocks destructive com
   var el=document.getElementById('demo'); if(!el) return;
   if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   var final_=el.innerHTML;
+  el.style.minHeight=el.getBoundingClientRect().height+'px';  // lock the finished height so nothing below shifts while typing
   var steps=[
     ['c','# Claude, inside your project\n'],
     ['type','$ git push --force origin main\n'],

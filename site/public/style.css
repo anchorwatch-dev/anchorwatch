@@ -154,6 +154,8 @@ main.home .cards{grid-template-columns:repeat(auto-fit,minmax(16rem,1fr))}
   .term-body{min-height:0;font-size:.8rem}
   h2{font-size:1.45rem}
   .band{padding:1.5rem 1.2rem}
-  .foot{padding:1.5rem 1rem 2.5rem;gap:1rem}
-  .foot nav{gap:.45rem .9rem;font-size:.88rem}
+  .foot{padding:1.5rem 1rem 2.5rem;gap:1.1rem}
+  .foot nav{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem .8rem;font-size:.92rem}
+  .foot nav a{padding:.15rem 0}
+  .legal{font-size:.8rem;line-height:1.5}
 }
