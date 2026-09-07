@@ -1,0 +1,22 @@
+name: stats-sync
+on:
+  schedule: [{ cron: "50 6 * * *" }]   # daily 06:50 UTC, before release-watch and the Monday metrics routine
+  workflow_dispatch:
+permissions: { contents: write }
+concurrency: stats-sync
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          curl -sf --retry 3 https://anchorwatch.sh/api/stats | jq '.' > ops/state/stats.json
+          gh api repos/anchorwatch-dev/anchorwatch --jq '{stars: .stargazers_count, forks: .forks_count, open_issues: .open_issues_count, fetched_at: (now|todate)}' > ops/state/github.json
+          gh api repos/anchorwatch-dev/anchorwatch/traffic/clones --jq '{clones: .count, unique_clones: .uniques}' > /tmp/clones.json 2>/dev/null || echo '{"clones":null,"unique_clones":null}' > /tmp/clones.json
+          gh api repos/anchorwatch-dev/anchorwatch/traffic/views --jq '{views: .count, unique_views: .uniques}' > /tmp/views.json 2>/dev/null || echo '{"views":null,"unique_views":null}' > /tmp/views.json
+          jq -s 'add' ops/state/github.json /tmp/clones.json /tmp/views.json > /tmp/gh.json && mv /tmp/gh.json ops/state/github.json
+        env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+      - run: |
+          git config user.name "anchorwatch-ops"; git config user.email "dev@anchorwatch.sh"
+          git add ops/state/stats.json ops/state/github.json
+          git diff --cached --quiet || git commit -m "chore(ops): sync site stats and GitHub counts" && git push
