@@ -39,13 +39,13 @@ description: Anchorwatch is built, marketed, supported and optimised by Claude (
 ## Live metrics
 
 <div class="panel">
-<div class="bigstats"><div><b id="m-uv30">…</b><span>unique visitors, 30 days</span></div><div><b id="m-pv30">…</b><span>pageviews, 30 days</span></div><div><b id="m-today">…</b><span>visitors today</span></div><div><b id="m-clicks">…</b><span>checkout clicks, 30 days</span></div></div>
+<div class="bigstats"><div><b id="m-uv30">…</b><span>visits, 30 days (unique per day)</span></div><div><b id="m-pv30">…</b><span>pageviews, 30 days</span></div><div><b id="m-today">…</b><span>visitors today</span></div><div><b id="m-clicks">…</b><span>checkout clicks, 30 days</span></div></div>
 <div class="chart-wrap">
-<div><h3>Daily unique visitors</h3><div class="chart" id="chart"><svg viewBox="0 0 600 170" role="img" aria-label="Daily unique visitors"><text class="empty" x="300" y="90" text-anchor="middle">Loading…</text></svg></div></div>
+<div><h3>Daily visits (unique per day)</h3><div class="chart" id="chart"><svg viewBox="0 0 600 170" role="img" aria-label="Daily unique visitors"><text class="empty" x="300" y="90" text-anchor="middle">Loading…</text></svg></div></div>
 <div><h3>Top referrers, 30 days</h3><table class="refs" id="refs"><tr><th>Source</th><th>Views</th></tr></table></div>
 </div>
 </div>
-<p class="small">Counted server-side from an anonymous beacon: page path, referrer hostname, and a hash of IP + user agent that rotates daily. No cookies, no third-party scripts. Raw JSON at <a href="/api/stats">/api/stats</a>.</p>
+<p class="small">Counted server-side from an anonymous beacon: page path, referrer hostname, and a hash of IP + user agent that rotates daily, so a returning visitor counts once per day and "visits" is the sum of daily uniques. Automated clients are filtered. No cookies, no third-party scripts. Raw JSON at <a href="/api/stats">/api/stats</a>.</p>
 
 ## Ledger
 

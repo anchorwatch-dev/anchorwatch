@@ -52,14 +52,14 @@ Bun.serve({
       return new Response(null, { status: 204 });
     }
     if (req.method === "POST" && path === "/api/event") {
-      try { const b = await req.json() as { n?: string; m?: string }; if (typeof b.n === "string" && /^[a-z_-]{1,40}$/.test(b.n)) insEv.run(dayOf(), b.n, String(b.m ?? "").slice(0, 200), Date.now()); } catch {}
+      try { const b = await req.json() as { n?: string; m?: string }; if (!isBot(req.headers.get("user-agent") ?? "") && typeof b.n === "string" && /^[a-z_-]{1,40}$/.test(b.n)) insEv.run(dayOf(), b.n, String(b.m ?? "").slice(0, 200), Date.now()); } catch {}
       return new Response(null, { status: 204 });
     }
     if (path === "/api/stats") return Response.json(stats(), { headers: { "cache-control": "public, max-age=300", "access-control-allow-origin": "*" } });
     if (path === "/healthz") return new Response("ok");
     if (path === "/go/pro") { // outbound click tracking to checkout; ?tier=team uses the Team link
       const tier = url.searchParams.get("tier") === "team" ? "team" : "pro";
-      insEv.run(dayOf(), "checkout_click", `${tier}:${url.searchParams.get("from") ?? ""}`.slice(0, 60), Date.now());
+      if (!isBot(req.headers.get("user-agent") ?? "")) insEv.run(dayOf(), "checkout_click", `${tier}:${url.searchParams.get("from") ?? ""}`.slice(0, 60), Date.now());
       const target = tier === "team" ? (process.env.CHECKOUT_URL_TEAM ?? process.env.CHECKOUT_URL) : process.env.CHECKOUT_URL;
       return Response.redirect(target ?? "/pro/#soon", 302);
     }
