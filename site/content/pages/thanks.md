@@ -6,11 +6,17 @@ description: Your purchase is complete. Accept the GitHub invitation, add the pr
 
 # Welcome aboard.
 
-Polar has just granted your GitHub account read access to the private `anchorwatch-pro` repository. Three steps and you're running.
+Your purchase is complete. Access is delivered through your GitHub account, so there is one connection to make first, then two commands.
 
-## 1. Accept the GitHub invitation
+## 1. Connect GitHub in Polar
 
-Check the email address attached to your GitHub account, or open [github.com/notifications](https://github.com/notifications). Accept the invitation to **anchorwatch-dev/anchorwatch-pro**. Until you do, the next step will fail with a "repository not found" error.
+<p><a class="btn primary" id="portal" href="https://polar.sh/anchorwatch/portal">Open your Polar purchase and connect GitHub<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+
+In the portal, under **Benefits → Anchorwatch Pro repository access**, click **Connect GitHub** and authorise the GitHub account you use with Claude Code. Polar then invites that account to the private **anchorwatch-dev/anchorwatch-pro** repository. Accept the invitation from the email GitHub sends, or at [github.com/notifications](https://github.com/notifications). Until you accept, the next step fails with "repository not found".
+
+<script>
+(function(){try{var t=new URLSearchParams(location.search).get("customer_session_token");if(t){document.getElementById("portal").href="https://polar.sh/anchorwatch/portal?customer_session_token="+encodeURIComponent(t)}}catch(e){}})();
+</script>
 
 ## 2. Add the marketplace
 
