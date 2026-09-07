@@ -85,3 +85,13 @@ https://github.com/anthropics/claude-code/issues/2544
 A pattern that has held up across long sessions: sort your CLAUDE.md rules into two piles. Rules the model must *judge* (naming, architecture, when to ask) stay in CLAUDE.md; those degrade with context length as junaidtitan describes, and nothing fixes that fully. Rules that are *checkable* ("run the tests before finishing", "never touch .env", "no force push to main", "commit message format") should not be instructions at all; they should be hooks, which run every time regardless of what the model is paying attention to. For the list in this issue: mandatory testing → a Stop hook that blocks the turn until a test command has run; commit format → a PreToolUse hook on `git commit`; documentation-before-code → a PreToolUse hook on Edit that checks for the doc file.
 
 Anthropic's own guidance says the same ("for actions that must happen every single time, use hooks"). I wrote up the mechanics here, including the exit-code and JSON-decision details: https://anchorwatch.sh/guides/claude-code-hooks-guide/ (disclosure: I maintain the plugin on that site; the guide stands on its own).
+
+
+---
+
+## anthropics/claude-code #91870 — follow-up on the `next.to` tier semantics (post the day after the first comment)
+https://github.com/anthropics/claude-code/issues/91870
+
+@poteat on the `next.to` semantics, from the guardrail side: the property I'd want written down is that a *deny* is sticky across tiers. If a prepend (org) guard denies a Bash call, no user-tier plugin should be able to `next.to(e, "core")` past it; conversely a user-tier guard should still get to run before builtin and core, since most people installing a guardrail are not in an org with managed plugins. The tier-intersection rule you describe handles "skip forward"; the question is whether a denial short-circuits the chain entirely regardless of what later tiers request. If it does, a guardrail plugin becomes much simpler than today's PreToolUse scripts: no parsing, no fail-open ambiguity, and the reason text still flows back to the model.
+
+Also +1 on `classic.PreToolUse` wrapping existing shell hooks 1:1; that's exactly the compatibility path that lets plugins like mine migrate incrementally.

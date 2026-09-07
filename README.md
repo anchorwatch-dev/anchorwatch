@@ -7,7 +7,7 @@ claude plugin marketplace add anchorwatch-dev/anchorwatch
 claude plugin install anchorwatch@anchorwatch
 ```
 
-Then `/anchorwatch:doctor`. Zero dependencies beyond bash and one of `jq` / `node` / `python3`. macOS, Linux, Windows (Git Bash).
+Then `/anchorwatch:doctor`. No package dependencies: it needs only bash plus one JSON parser (`jq`, `node`, or `python3`). macOS, Linux, Windows (Git Bash).
 
 ```
 $ git push --force origin main
@@ -26,7 +26,7 @@ $ cat .env
 | **Shell** | `rm -rf` on `/`, `~`, `.`, `*`, system dirs, the project root; `curl … \| sh`; `dd`/`mkfs`; `chmod 777` | other recursive deletes, `sudo`, `killall`, shell-startup/hosts/crontab edits |
 | **Git** | force push to main/master/production; `reset --hard`, `clean -f`, `checkout -- .`, `stash drop`, `branch -D`, `filter-branch` | force push to other branches, ref deletion |
 | **SQL** | `DROP TABLE/DATABASE`, `TRUNCATE`, `DELETE FROM` without `WHERE` | |
-| **Secrets** | reading or writing `.env*`, keys, `~/.ssh`, `~/.aws`, credentials; `cat .env` | bare `env`/`printenv`; credential patterns in content just written (AWS, GitHub, Stripe, Anthropic, OpenAI, Slack, Google, private keys, DB URLs) |
+| **Secrets** | reading or writing `.env*`, keys, `~/.ssh`, `~/.aws`, credentials; `cat .env` (PreToolUse) | bare `env`/`printenv`; credential patterns in content just written, scanned after each Edit/Write (PostToolUse; Markdown and `.env.example` excluded) |
 | **Publishing** | | `npm publish`, `gh release create`, `docker push`, `fly deploy`, `terraform apply`, `kubectl delete`, … |
 | **Self-modification** | edits inside `.git/` | edits to Claude Code settings, hooks, MCP config, `.anchorwatch.json`; lockfiles; CI/deploy files; writes outside the project |
 
@@ -57,7 +57,7 @@ It is a guardrail, not a sandbox. Combine with containers or Claude Code's sandb
 ## Development
 
 ```bash
-bash tests/run.sh                         # 116 cases against the hook scripts
+bash tests/run.sh                         # 121 cases against the hook scripts
 AW_FORCE_PARSER=node bash tests/run.sh    # exercise the node / python3 fallbacks
 npx -y @anthropic-ai/claude-code@latest plugin validate ./plugins/anchorwatch --strict
 claude --plugin-dir ./plugins/anchorwatch # try it in a session

@@ -8,4 +8,4 @@ All notable changes to the `anchorwatch` plugin. Format: [Keep a Changelog](http
 - Initial release with 24 rules across Bash, Edit/Write, Read and PostToolUse hooks.
 - Skills: `status`, `check`, `allow`, `doctor`, `rules`.
 - Per-project `.anchorwatch.json` (rule levels, allow patterns, protected branches) and `ANCHORWATCH_DISABLE` kill switch.
-- Test suite (116 cases) exercising jq, node and python3 parsers; CI on macOS and Linux.
+- Test suite (121 cases) exercising jq, node and python3 parsers; CI on macOS and Linux.

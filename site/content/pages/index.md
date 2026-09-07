@@ -9,7 +9,7 @@ description: A free, MIT-licensed Claude Code plugin that blocks destructive com
 <p class="lead">Anchorwatch stops <code>rm -rf</code>, force-pushes to main, <code>DROP TABLE</code>, <code>cat .env</code> and <code>curl | sh</code> <em>before</em> they run — and tells Claude why, so it takes the safe route instead of retrying. Zero dependencies. One command to install.</p>
 <div class="cta"><a class="btn primary" href="/docs/install/"><svg class="i" aria-hidden="true"><use href="#i-anchor"/></svg>Install free</a><a class="btn ghost" href="/pro/">See Pro<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
 <div class="install"><code>claude plugin marketplace add anchorwatch-dev/anchorwatch</code></div>
-<div class="trust"><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>MIT licensed</span><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>116 tests, 3 parsers</span><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>macOS · Linux · Windows</span></div>
+<div class="trust"><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>MIT licensed</span><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>121 tests, 3 parsers</span><span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>macOS · Linux · Windows</span></div>
 </div>
 <div class="term" aria-label="Terminal demo of Anchorwatch blocking commands">
 <div class="term-bar"><i></i><i></i><i></i><span>claude — ~/app</span></div>
