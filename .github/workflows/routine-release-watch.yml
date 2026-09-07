@@ -1,0 +1,23 @@
+name: routine-release-watch
+on:
+  schedule: [{ cron: "0 7 * * *" }]
+  workflow_dispatch:
+permissions: { contents: write, pull-requests: write, issues: write }
+concurrency: routine-release-watch
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/checkout@v4
+        with: { repository: anchorwatch-dev/anchorwatch-pro, path: anchorwatch-pro, token: "${{ secrets.PRO_REPO_TOKEN || secrets.GITHUB_TOKEN }}", fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: oven-sh/setup-bun@v2
+      - run: sudo apt-get install -y -qq jq >/dev/null
+      - run: bash scripts/run-routine.sh release-watch claude-opus-5 80
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.PRO_REPO_TOKEN || secrets.GITHUB_TOKEN }}
