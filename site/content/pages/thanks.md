@@ -1,32 +1,34 @@
 ---
 title: Thanks — set up Anchorwatch Pro
-description: Your purchase is complete. Accept the GitHub invitation, add the private marketplace, and install the Pro plugins.
+description: Your purchase is complete. Connect GitHub in your Polar portal, accept the repository invitation, and install the Pro plugins.
 ---
 <p class="eyebrow">Purchase complete</p>
 
 # Welcome aboard.
 
-Your purchase is complete. Access is delivered through your GitHub account, so there is one connection to make first, then two commands.
+Pro is delivered as read access to a private GitHub repository. Four short steps, about three minutes.
 
-## 1. Connect GitHub in Polar
+## 1. Open your Polar portal and connect GitHub
 
-<p><a class="btn primary" id="portal" href="https://polar.sh/anchorwatch/portal">Open your Polar purchase and connect GitHub<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+Polar has emailed you a receipt from **Anchorwatch** with a link to your customer portal. Open that link, or use this button (it carries your session from checkout):
 
-In the portal, under **Benefits → Anchorwatch Pro repository access**, click **Connect GitHub** and authorise the GitHub account you use with Claude Code. Polar then invites that account to the private **anchorwatch-dev/anchorwatch-pro** repository. Accept the invitation from the email GitHub sends, or at [github.com/notifications](https://github.com/notifications). Until you accept, the next step fails with "repository not found".
+<p><a class="btn primary" id="portal" href="https://polar.sh/anchorwatch/portal">Open my Polar portal<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
 
-<script>
-(function(){try{var t=new URLSearchParams(location.search).get("customer_session_token");if(t){document.getElementById("portal").href="https://polar.sh/anchorwatch/portal?customer_session_token="+encodeURIComponent(t)}}catch(e){}})();
-</script>
+In the portal, scroll to **Benefit Grants → Anchorwatch Pro repository access** and click the connect button. Sign in to GitHub with the account you use with Claude Code and authorise Polar. That's what triggers the invitation.
 
-## 2. Add the marketplace
+## 2. Accept the GitHub invitation
+
+GitHub emails that account an invitation to **anchorwatch-dev/anchorwatch-pro** within a minute. Accept it from the email, from [github.com/notifications](https://github.com/notifications), or by clicking **Go to anchorwatch-dev/anchorwatch-pro** in the portal. Until you accept, the next step fails with "repository not found".
+
+## 3. Add the marketplace
 
 ```bash
 claude plugin marketplace add anchorwatch-dev/anchorwatch-pro
 ```
 
-This clones with your normal GitHub credentials. If you only use HTTPS, set `CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1` first; if background updates later fail, run `gh auth setup-git` once.
+Run this where `gh` is logged in as the GitHub account you just connected. If you only use HTTPS for GitHub, set `CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1` first. If background updates fail later, run `gh auth setup-git` once.
 
-## 3. Install what you want
+## 4. Install what you want
 
 ```bash
 claude plugin install quality-gates@anchorwatch-pro
@@ -43,14 +45,15 @@ Or inside Claude Code: `/plugin` → Browse → anchorwatch-pro. Start a new ses
 
 Open an issue in the `anchorwatch-pro` repository titled "Team seats" listing the GitHub usernames to add (up to nine more). They're added within a day.
 
-## Something not working?
+## If something doesn't work
 
-- **No invitation after 10 minutes** — check that the GitHub account connected to Polar is the one you expect (Polar customer portal → Benefits → GitHub Repository Access), then re‑trigger it there.
-- **Marketplace add fails** — you haven't accepted the invitation yet, or you're logged into a different GitHub account in `gh`.
-- Anything else: [open an issue](https://github.com/anchorwatch-dev/anchorwatch-pro/issues) (private to buyers) or email hello@anchorwatch.sh. Your receipt and refund options are in the Polar email.
+- **No invitation** — in the portal, under the benefit, click **Request new invite**. Check you connected the GitHub account you expected.
+- **"Repository not found"** on step 3 — the invitation hasn't been accepted yet, or `gh` is logged in as a different account (`gh auth status`).
+- Anything else: email hello@anchorwatch.sh, or [open an issue](https://github.com/anchorwatch-dev/anchorwatch-pro/issues) once you have access. Your receipt and the 14‑day refund option are in Polar's email.
 
 Thank you for backing an experiment. The free guardrails plugin and the [experiment page](/experiment/) are where this all started.
 
 <script>
-(function(){try{var d=JSON.stringify({n:"purchase_landing",m:location.search.slice(0,120)});navigator.sendBeacon&&navigator.sendBeacon("/api/event",new Blob([d],{type:"application/json"}))}catch(e){}})();
+(function(){try{var t=new URLSearchParams(location.search).get("customer_session_token");if(t){document.getElementById("portal").href="https://polar.sh/anchorwatch/portal/overview?customer_session_token="+encodeURIComponent(t)}
+var d=JSON.stringify({n:"purchase_landing",m:""});navigator.sendBeacon&&navigator.sendBeacon("/api/event",new Blob([d],{type:"application/json"}))}catch(e){}})();
 </script>
