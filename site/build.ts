@@ -39,7 +39,7 @@ function renderDir(sub: string, prefix: string, kind: "article" | "page", collec
     const page: Page = { title: front.title ?? slug, description: front.description ?? "", path, body: html, date: front.date, updated: front.updated, kind: slug === "index" ? "page" : kind };
     out(path, layout(page));
     if (slug !== "thanks") urls.push({ loc: SITE + path, lastmod: front.updated ?? front.date });
-    if (collect && slug !== "index") collect.push({ ...front, path });
+    if (collect && slug !== "index" && !(sub === "docs" && slug.startsWith("pro-"))) collect.push({ ...front, path });
   }
 }
 

@@ -25,23 +25,31 @@ The free plugin stops Claude from doing damage. Pro makes Claude work the way a 
 
 ## What each plugin actually does
 
+Each plugin has a full documentation page under [Pro plugins](/docs/pro/), public so you can see exactly what you'd get before buying.
+
 ### Quality Gates
 A `PostToolUse` hook runs the formatter your repo already uses (prettier, biome, ruff, black, gofmt, rustfmt — auto-detected, nothing runs if you have none) on every file Claude edits, then scans non-test code for `console.log`, `debugger`, `print(`, `dbg!`, `binding.pry`. A `Stop` hook checks whether code changed since the last test run and whether that run passed; in `remind` mode it tells you and Claude, in `enforce` mode it blocks the first attempt to stop so Claude goes and runs the tests. `/quality-gates:preflight` runs lint → typecheck → tests → build and gives you a scorecard.
+[Full docs →](/docs/pro-quality-gates/)
 
 ### Ship
 `/ship:commit` reads the *actual diff*, splits unrelated changes, and writes Conventional Commits — never `--no-verify`, never `git add -A`. `/ship:pr` pushes, fills your PR template (or a good default: summary, changes, test plan, risks), and links issues. `/ship:release` runs gates (clean tree, default branch, tests green), infers the semver bump from the commits, writes the CHANGELOG section, bumps every version file, and only after you confirm: commits, tags, pushes, and creates the GitHub release.
+[Full docs →](/docs/pro-ship/)
 
 ### Review Crew
 Four subagents — `security-reviewer`, `perf-reviewer`, `test-gap-finder`, `contract-reviewer` — each with a detailed checklist and a strict output format (severity, file:line, evidence, failure scenario, fix). `/review-crew:review` runs them in parallel on your working tree, a git range, or a PR number, de-duplicates and ranks the findings, and gives a verdict. `--fix` applies the critical and high fixes and re-runs the tests.
+[Full docs →](/docs/pro-review-crew/)
 
 ### Context Keeper
 A `PreCompact` hook writes a snapshot (branch, uncommitted changes, diff stat, recent commits, recently modified files, your HANDOFF.md) and a `SessionStart` hook re-injects it after compaction or resume, so Claude doesn't "forget" what it was doing halfway through. `/context-keeper:handoff` writes a precise HANDOFF.md; `/context-keeper:resume` reconciles it with git and proposes the next step.
+[Full docs →](/docs/pro-context-keeper/)
 
 ### Setup Audit
 `/setup-audit:run` inventories CLAUDE.md, `.claude/settings.json` (secrets masked), hooks, rules, skills, agents, MCP servers, memory, and repo hygiene (including a spot-check of git history for leaked keys), grades each area A–F against a published rubric, and lists the top five fixes ordered by risk × ease. `--apply` makes the safe local ones.
+[Full docs →](/docs/pro-setup-audit/)
 
 ### Stack Packs
 `/stack-packs:init` detects your stack and writes a CLAUDE.md filled with *your* real commands, package manager, versions and layout, plus path-scoped `.claude/rules`. If you already have a CLAUDE.md it merges and flags contradictions instead of overwriting.
+[Full docs →](/docs/pro-stack-packs/)
 
 ## FAQ
 

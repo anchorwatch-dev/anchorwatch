@@ -36,7 +36,7 @@ export function layout(p: Page): string {
     : `<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@type": "SoftwareApplication", name: NAME, applicationCategory: "DeveloperApplication", operatingSystem: "macOS, Linux, Windows", description: p.description, url: SITE, offers: [{ "@type": "Offer", price: "0", priceCurrency: "USD", name: "Anchorwatch (free, MIT)" }, { "@type": "Offer", price: "39", priceCurrency: "USD", name: "Anchorwatch Pro" }] })}</script>`;
   const active = (href: string) => (p.path === href || (href !== "/" && p.path.startsWith(href)) ? ' class="on"' : "");
   const isDocs = p.path.startsWith("/docs/");
-  const docsNav = isDocs ? `<nav class="subnav" aria-label="Docs"><a href="/docs/install/"${active("/docs/install/")}>Install</a><a href="/docs/configuration/"${active("/docs/configuration/")}>Configuration</a><a href="/docs/rules/"${active("/docs/rules/")}>Rules reference</a><a href="/docs/how-it-works/"${active("/docs/how-it-works/")}>How it works</a></nav>` : "";
+  const docsNav = isDocs ? `<nav class="subnav" aria-label="Docs"><a href="/docs/install/"${active("/docs/install/")}>Install</a><a href="/docs/configuration/"${active("/docs/configuration/")}>Configuration</a><a href="/docs/rules/"${active("/docs/rules/")}>Rules reference</a><a href="/docs/how-it-works/"${active("/docs/how-it-works/")}>How it works</a><a href="/docs/pro/"${active("/docs/pro")}>Pro plugins</a></nav>` : "";
   return `<!doctype html>
 <html lang="en">
 <head>

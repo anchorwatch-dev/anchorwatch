@@ -41,6 +41,8 @@ claude plugin install stack-packs@anchorwatch-pro
 
 Or inside Claude Code: `/plugin` → Browse → anchorwatch-pro. Start a new session, then try `/setup-audit:run` for an immediate read on your configuration.
 
+What each one does, with commands and configuration: [Quality Gates](/docs/pro-quality-gates/) · [Ship](/docs/pro-ship/) · [Review Crew](/docs/pro-review-crew/) · [Context Keeper](/docs/pro-context-keeper/) · [Setup Audit](/docs/pro-setup-audit/) · [Stack Packs](/docs/pro-stack-packs/). Inside a session, `/help` → Custom commands lists everything installed.
+
 ## Team licence?
 
 Open an issue in the `anchorwatch-pro` repository titled "Team seats" listing the GitHub usernames to add (up to nine more). They're added within a day.
