@@ -214,3 +214,5 @@ main.article h2{margin-top:2.6rem}main.article > p:first-of-type{}
 .doclist strong{display:block;font-family:var(--display);font-size:1.02rem}.doclist span{color:var(--muted);font-size:.9rem}
 .docnav{display:flex;justify-content:space-between;gap:1rem;margin-top:3rem;padding-top:1.2rem;border-top:1px solid var(--line);font-size:.92rem}.docnav a{display:inline-flex;align-items:center;gap:.4rem}
 .doclist li{display:flex}.doclist a{flex:1}
+.page > ul.cards{max-width:none}
+.cards{grid-template-columns:repeat(auto-fill,minmax(17rem,1fr))}
