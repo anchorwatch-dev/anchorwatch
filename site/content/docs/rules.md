@@ -17,7 +17,7 @@ description: Every Anchorwatch guardrail rule, its default level, what triggers 
 | `git-force-push-protected` | <span class="tag block">block</span> | `git push --force`/`-f`/`--force-with-lease` where the target branch (explicit refspec or current branch) is protected | Use a feature branch and a PR; the user runs it if history truly must change |
 | `git-force-push` | <span class="tag warn">warn</span> | force push to any other branch | Prefer `--force-with-lease`; confirm if the branch is shared |
 | `git-push-delete` | <span class="tag warn">warn</span> | `git push --delete`, `--mirror`, `:branch` | Confirm ref deletion |
-| `git-destructive` | <span class="tag block">block</span> | `reset --hard`, `clean -f/-d/-x`, `checkout -- .`, `restore .`, `stash drop/clear`, `branch -D`, `filter-branch`, `filter-repo` | Stash or commit first; ask |
+| `git-destructive` | <span class="tag block">block</span> | `reset --hard`, `clean -f/-d/-x`, `checkout -- .`, `restore .`, `stash drop/clear`, `branch -D`, `filter-branch`, `filter-repo`, `submodule deinit -f`, `worktree remove -f` | Stash or commit first; ask |
 | `sql-destructive` | <span class="tag block">block</span> | `DROP TABLE/DATABASE/SCHEMA`, `TRUNCATE`, `DELETE FROM x` with no `WHERE` — in any CLI | Write a migration or a scoped statement and confirm |
 | `pipe-to-shell` | <span class="tag block">block</span> | `curl … \| sh`, `wget … \| bash`, incl. `\| sudo bash` | Download to a file, inspect, then run |
 | `disk-destroy` | <span class="tag block">block</span> | `mkfs`, `dd if=`, `fdisk`, `parted`, `shred`, `diskutil erase`, `> /dev/sdX` | — |

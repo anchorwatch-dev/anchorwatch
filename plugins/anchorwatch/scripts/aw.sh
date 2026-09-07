@@ -12,7 +12,7 @@ rm-recursive              warn     any other recursive delete
 git-force-push-protected  block    git push --force/-f to main, master, production, prod, release (configurable)
 git-force-push            warn     force push to any other branch (suggests --force-with-lease)
 git-push-delete           warn     git push --delete / --mirror / :branch
-git-destructive           block    reset --hard, clean -f, checkout -- ., restore ., stash drop/clear, branch -D, filter-branch
+git-destructive           block    reset --hard, clean -f, checkout -- ., restore ., stash drop/clear, branch -D, filter-branch, submodule deinit -f, worktree remove -f
 sql-destructive           block    DROP TABLE/DATABASE/SCHEMA, TRUNCATE, DELETE FROM without WHERE
 pipe-to-shell             block    curl/wget ... | sh
 disk-destroy              block    mkfs, dd if=, fdisk, parted, shred, > /dev/sdX

@@ -78,7 +78,7 @@ EOL
   fi
 
   # --- Git: local destructive ---
-  if printf '%s' "$seg" | grep -Eq '(^|[[:space:]])git[[:space:]]+(reset[[:space:]]+--hard|clean[[:space:]]+-[a-zA-Z]*[fdx]|checkout[[:space:]]+--[[:space:]]+\.|restore[[:space:]]+\.|restore[[:space:]]+--staged[[:space:]]+\.|stash[[:space:]]+(drop|clear)|branch[[:space:]]+-D|filter-branch|filter-repo)([[:space:]]|$)'; then
+  if printf '%s' "$seg" | grep -Eq '(^|[[:space:]])git[[:space:]]+(reset[[:space:]]+--hard|clean[[:space:]]+-[a-zA-Z]*[fdx]|checkout[[:space:]]+--[[:space:]]+\.|restore[[:space:]]+\.|restore[[:space:]]+--staged[[:space:]]+\.|stash[[:space:]]+(drop|clear)|branch[[:space:]]+-D|filter-branch|filter-repo|submodule[[:space:]]+deinit[[:space:]]+(-f|--force)|worktree[[:space:]]+remove[[:space:]]+(-f|--force))([[:space:]]|$)'; then
     apply git-destructive block "this git command discards uncommitted work or rewrites history irreversibly ('$(printf '%s' "$seg" | head -c 80)'). Stash or commit first, or ask the user."
   fi
 
