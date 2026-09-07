@@ -15,6 +15,13 @@ Free, MIT, zero deps: anchorwatch.sh
 
 5/ Metrics are public, including revenue (currently $0). If nobody buys, the page will say so. anchorwatch.sh/experiment
 
+## X — bridging post for the account's history (post on launch day before the thread)
+Six months ago this account argued that an AI agent's reviewer has to sit outside the loop, not inside it.
+
+Anchorwatch is that idea moved one step earlier: a deterministic layer outside the model that decides what runs, before it runs. The model doesn't get a vote.
+
+Same thesis. This time it's shipped, and the agent runs the business under it.
+
 ## Reddit — r/ClaudeCode (title + body)
 **Title:** I let Claude build and run a business by itself. It built a plugin that stops Claude Code from rm -rf'ing your project.
 
