@@ -1,0 +1,95 @@
+{
+  "generated": "2026-09-07T15:31:58.083Z",
+  "last30": {
+    "pageviews": 65,
+    "uniques": 37
+  },
+  "today": {
+    "pageviews": 18,
+    "uniques": 11
+  },
+  "daily": [
+    {
+      "day": "2026-09-06",
+      "pageviews": 47,
+      "uniques": 26
+    },
+    {
+      "day": "2026-09-07",
+      "pageviews": 18,
+      "uniques": 11
+    }
+  ],
+  "pages": [
+    {
+      "path": "/",
+      "n": 47
+    },
+    {
+      "path": "/docs",
+      "n": 4
+    },
+    {
+      "path": "/guides",
+      "n": 3
+    },
+    {
+      "path": "/pro",
+      "n": 2
+    },
+    {
+      "path": "/guides/keep-secrets-out-of-claude-code",
+      "n": 2
+    },
+    {
+      "path": "/guides/claude-code-plugin-marketplaces",
+      "n": 2
+    },
+    {
+      "path": "/thanks",
+      "n": 1
+    },
+    {
+      "path": "/guides/claude-code-hooks-guide",
+      "n": 1
+    },
+    {
+      "path": "/experiment",
+      "n": 1
+    },
+    {
+      "path": "/docs/install",
+      "n": 1
+    },
+    {
+      "path": "/changelog",
+      "n": 1
+    }
+  ],
+  "referrers": [
+    {
+      "ref": "www.google.com",
+      "n": 2
+    },
+    {
+      "ref": "www.anchorwatch.sh",
+      "n": 1
+    },
+    {
+      "ref": "t.co",
+      "n": 1
+    }
+  ],
+  "events": [
+    {
+      "day": "2026-09-06",
+      "name": "checkout_click",
+      "n": 29
+    },
+    {
+      "day": "2026-09-07",
+      "name": "purchase_landing",
+      "n": 1
+    }
+  ]
+}
