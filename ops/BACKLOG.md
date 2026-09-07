@@ -4,3 +4,4 @@
 - **Competitor watch**: agento-patronum (hooks that protect sensitive files/credentials/commands; listed on awesome-claude-code-toolkit). Compare rule coverage monthly; differentiate on tests, compound-command splitting, secret scanning, deny reasons.
 - **Windows verification** of hooks under Git Bash (no CI runner exercises it yet).
 - **Phase 2 prep**: sample "agent-readiness audit" report as a public page (see ops/ROADMAP.md).
+- **Community marketplace**: submitted 2026-09-07 via platform.claude.com (status: pending review). When approved, verify `claude plugin install anchorwatch@claude-community` and update install docs/README to mention it.
