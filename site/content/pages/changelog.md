@@ -6,6 +6,11 @@ description: Release notes for the Anchorwatch and Anchorwatch Pro plugins for C
 
 Subscribe via [RSS](/changelog.xml). Versions follow semver; the plugins pin `version` in their manifests, so you receive an update whenever a number changes.
 
+## anchorwatch-pro: quality-gates 0.1.1, context-keeper 0.1.1 — 2026-09-08
+- Quality Gates: fixed the stop gate missing "code was edited after the last test run" on Linux — the file-timestamp lookup used a macOS-only `stat` form that GNU coreutils answers with filesystem info instead, breaking the comparison. In `enforce` mode the gate now blocks the stop as documented rather than letting it through.
+- Context Keeper: fixed the 3-day freshness guard on state snapshots, which was inert on Linux for the same reason and could restore a stale snapshot after compaction.
+- No behaviour change on macOS; both plugins now resolve timestamps the same way on both platforms.
+
 ## anchorwatch 0.1.0 — 2026-09-06
 - Initial release. 24 rules: 11 blocking (dangerous recursive delete, force push to protected branches, destructive git, DROP/TRUNCATE/unscoped DELETE, curl|sh, disk destruction, chmod 777, reading .env files, writing secret files, editing .git internals, reading secret files) and 13 warning (other recursive deletes, force pushes to feature branches, ref deletion, env dumps, publish/deploy/infra commands, sudo, broad kills, shell startup edits, lockfile edits, self-configuration, CI/infra files, writes outside the project, credential patterns in written content).
 - Skills: `/anchorwatch:status`, `/anchorwatch:check`, `/anchorwatch:allow`, `/anchorwatch:doctor`, `/anchorwatch:rules`.
