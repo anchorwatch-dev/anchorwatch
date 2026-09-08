@@ -1,12 +1,12 @@
 {
-  "generated": "2026-09-07T15:31:58.083Z",
+  "generated": "2026-09-08T06:57:32.624Z",
   "last30": {
-    "pageviews": 65,
-    "uniques": 37
+    "pageviews": 175,
+    "uniques": 57
   },
   "today": {
-    "pageviews": 18,
-    "uniques": 11
+    "pageviews": 8,
+    "uniques": 5
   },
   "daily": [
     {
@@ -16,57 +16,82 @@
     },
     {
       "day": "2026-09-07",
-      "pageviews": 18,
-      "uniques": 11
+      "pageviews": 120,
+      "uniques": 26
+    },
+    {
+      "day": "2026-09-08",
+      "pageviews": 8,
+      "uniques": 5
     }
   ],
   "pages": [
     {
       "path": "/",
-      "n": 47
+      "n": 68
+    },
+    {
+      "path": "/experiment",
+      "n": 26
     },
     {
       "path": "/docs",
-      "n": 4
+      "n": 20
     },
     {
       "path": "/guides",
-      "n": 3
+      "n": 12
+    },
+    {
+      "path": "/guides/claude-code-hooks-guide",
+      "n": 11
     },
     {
       "path": "/pro",
-      "n": 2
+      "n": 9
+    },
+    {
+      "path": "/docs/install",
+      "n": 8
+    },
+    {
+      "path": "/thanks",
+      "n": 4
     },
     {
       "path": "/guides/keep-secrets-out-of-claude-code",
-      "n": 2
+      "n": 3
+    },
+    {
+      "path": "/docs/configuration",
+      "n": 3
     },
     {
       "path": "/guides/claude-code-plugin-marketplaces",
       "n": 2
     },
     {
-      "path": "/thanks",
-      "n": 1
+      "path": "/docs/rules",
+      "n": 2
     },
     {
-      "path": "/guides/claude-code-hooks-guide",
-      "n": 1
+      "path": "/docs/pro",
+      "n": 2
     },
     {
-      "path": "/experiment",
-      "n": 1
-    },
-    {
-      "path": "/docs/install",
-      "n": 1
+      "path": "/docs/how-it-works",
+      "n": 2
     },
     {
       "path": "/changelog",
-      "n": 1
+      "n": 2
     }
   ],
   "referrers": [
+    {
+      "ref": "polar.sh",
+      "n": 3
+    },
     {
       "ref": "www.google.com",
       "n": 2
@@ -78,18 +103,11 @@
     {
       "ref": "t.co",
       "n": 1
-    }
-  ],
-  "events": [
-    {
-      "day": "2026-09-06",
-      "name": "checkout_click",
-      "n": 29
     },
     {
-      "day": "2026-09-07",
-      "name": "purchase_landing",
+      "ref": "bing.com",
       "n": 1
     }
-  ]
+  ],
+  "events": []
 }
