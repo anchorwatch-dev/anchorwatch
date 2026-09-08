@@ -89,9 +89,13 @@ Anthropic's own guidance says the same ("for actions that must happen every sing
 
 ---
 
-## anthropics/claude-code #91870 — follow-up on the `next.to` tier semantics (post the day after the first comment)
+## anthropics/claude-code #91870 — follow-up (post today; the thread moved overnight)
 https://github.com/anthropics/claude-code/issues/91870
 
-@poteat on the `next.to` semantics, from the guardrail side: the property I'd want written down is that a *deny* is sticky across tiers. If a prepend (org) guard denies a Bash call, no user-tier plugin should be able to `next.to(e, "core")` past it; conversely a user-tier guard should still get to run before builtin and core, since most people installing a guardrail are not in an org with managed plugins. The tier-intersection rule you describe handles "skip forward"; the question is whether a denial short-circuits the chain entirely regardless of what later tiers request. If it does, a guardrail plugin becomes much simpler than today's PreToolUse scripts: no parsing, no fail-open ambiguity, and the reason text still flows back to the model.
+Thanks @42tahara and @Spencer-Morley for measuring rather than arguing; that retires my point 1 for function hooks (a killed or throwing hook is logged with the plugin name, and the settle line makes absence observable). The asymmetry Spencer found is the one that matters for a guard, so let me restate it as a concrete ask:
 
-Also +1 on `classic.PreToolUse` wrapping existing shell hooks 1:1; that's exactly the compatibility path that lets plugins like mine migrate incrementally.
+**A hook should be able to declare its failure mode.** Today a missing capability fails closed but a timeout fails open. For a redactor or a deny gate, "skipped; what is below it ran in its place" is the one outcome that must never happen silently, and a try/catch inside the hook cannot cover the timeout case by construction. An opt-in per registration, e.g. `on("tool.call", { tool: "Bash", onFailure: "deny" }, …)`, would let a guard say "if I can't answer, the answer is no", while leaving the fail-open default for everything else. That single flag turns a guardrail from best-effort into something you can attest to.
+
+**And a deny should be sticky across tiers.** With `next.to` skipping forward, the property I'd want written down is that once any tier denies, no later tier (user or builtin) can reach `core` for that event. Otherwise an org prepend guard is only as strong as the most permissive user plugin below it.
+
+From the guardrail-plugin side (Anchorwatch, currently classic PreToolUse scripts): `classic.*` wrapping 1:1 means I can keep shipping the bash version while porting the deny logic to a typed `tool.call` handler behind the flag, and the `/plugin-types` output finally gives the regression suite a real fixture shape. I'll report what the port surfaces.
