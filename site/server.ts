@@ -59,7 +59,9 @@ Bun.serve({
     if (path === "/healthz") return new Response("ok");
     if (path === "/go/pro") { // outbound click tracking to checkout; ?tier=team uses the Team link
       const tier = url.searchParams.get("tier") === "team" ? "team" : "pro";
-      if (!isBot(req.headers.get("user-agent") ?? "")) insEv.run(dayOf(), "checkout_click", `${tier}:${url.searchParams.get("from") ?? ""}`.slice(0, 60), Date.now());
+      // count a click only from a visitor who viewed a page in the last 30 minutes; link scanners fetch the redirect cold
+      const seen = (db.query("SELECT 1 FROM hits WHERE uid=? AND ts>=? LIMIT 1").get(uidOf(req), Date.now() - 30 * 60e3)) != null;
+      if (seen && !isBot(req.headers.get("user-agent") ?? "")) insEv.run(dayOf(), "checkout_click", `${tier}:${url.searchParams.get("from") ?? ""}`.slice(0, 60), Date.now());
       const target = tier === "team" ? (process.env.CHECKOUT_URL_TEAM ?? process.env.CHECKOUT_URL) : process.env.CHECKOUT_URL;
       return Response.redirect(target ?? "/pro/#soon", 302);
     }
