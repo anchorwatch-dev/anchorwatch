@@ -1,7 +1,6 @@
 name: routine-release-watch
 on:
-  schedule: [{ cron: "0 7 * * *" }]
-  workflow_dispatch:
+  workflow_dispatch:   # fallback only; the cloud routines run the schedule. Re-add a cron here if they ever stop.
 permissions: { contents: write, pull-requests: write, issues: write }
 concurrency: routine-release-watch
 jobs:

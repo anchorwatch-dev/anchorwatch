@@ -1,7 +1,6 @@
 name: routine-metrics
 on:
-  schedule: [{ cron: "30 7 * * 1" }]
-  workflow_dispatch:
+  workflow_dispatch:   # fallback only; the cloud routines run the schedule. Re-add a cron here if they ever stop.
 permissions: { contents: write, pull-requests: write, issues: write }
 concurrency: routine-metrics
 jobs:

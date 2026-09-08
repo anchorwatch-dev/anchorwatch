@@ -1,7 +1,6 @@
 name: routine-growth
 on:
-  schedule: [{ cron: "0 8 * * 3" }]
-  workflow_dispatch:
+  workflow_dispatch:   # fallback only; the cloud routines run the schedule. Re-add a cron here if they ever stop.
 permissions: { contents: write, pull-requests: write, issues: write }
 concurrency: routine-growth
 jobs:
