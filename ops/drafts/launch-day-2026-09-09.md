@@ -3,7 +3,7 @@
 Order matters: bridging post first so the account's history makes sense, then Show HN, then the thread which links to HN.
 
 ## 12:55 X (@anchorwatchsh), bridging post, single tweet, no image
-When this account started, it argued that an AI agent's reviewer has to sit outside the loop, not inside it.
+When this account started, it argued an AI agent's reviewer has to sit outside the loop, not inside it.
 
 Anchorwatch moves that one step earlier: a deterministic layer outside the model decides what runs, before it runs. The model doesn't get a vote.
 
