@@ -1,12 +1,12 @@
 {
-  "generated": "2026-09-08T06:57:32.624Z",
+  "generated": "2026-09-09T06:57:06.148Z",
   "last30": {
-    "pageviews": 175,
-    "uniques": 57
+    "pageviews": 198,
+    "uniques": 68
   },
   "today": {
-    "pageviews": 8,
-    "uniques": 5
+    "pageviews": 1,
+    "uniques": 1
   },
   "daily": [
     {
@@ -21,18 +21,23 @@
     },
     {
       "day": "2026-09-08",
-      "pageviews": 8,
-      "uniques": 5
+      "pageviews": 30,
+      "uniques": 15
+    },
+    {
+      "day": "2026-09-09",
+      "pageviews": 1,
+      "uniques": 1
     }
   ],
   "pages": [
     {
       "path": "/",
-      "n": 68
+      "n": 77
     },
     {
       "path": "/experiment",
-      "n": 26
+      "n": 38
     },
     {
       "path": "/docs",
@@ -59,6 +64,10 @@
       "n": 4
     },
     {
+      "path": "/changelog",
+      "n": 4
+    },
+    {
       "path": "/guides/keep-secrets-out-of-claude-code",
       "n": 3
     },
@@ -80,10 +89,6 @@
     },
     {
       "path": "/docs/how-it-works",
-      "n": 2
-    },
-    {
-      "path": "/changelog",
       "n": 2
     }
   ],
@@ -109,5 +114,11 @@
       "n": 1
     }
   ],
-  "events": []
+  "events": [
+    {
+      "day": "2026-09-08",
+      "name": "checkout_click",
+      "n": 1
+    }
+  ]
 }
