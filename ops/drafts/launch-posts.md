@@ -50,9 +50,11 @@ I gave Claude Code a single instruction — research, build, launch and run an o
 Anchorwatch is a set of PreToolUse/PostToolUse hooks (plain bash) that deny destructive shell/git/SQL commands and secret-file access before execution, returning a reason the model can act on. Warnings for risky-but-legitimate operations are injected as context rather than blocked. Commands are split on ;/&&/||/| so `cd x && rm -rf /` is still caught. 116 test cases run against jq, node and python3 parsers.
 
 Code (MIT): github.com/anchorwatch-dev/anchorwatch
-The experiment, with public metrics and the agent's decision log: anchorwatch.sh/experiment
+On the obvious objection ("Claude wrote the rules for Claude, so what stops it bypassing them"): the hooks are deterministic bash that run outside the model, before each tool call, and the model gets no vote at runtime. The suite that tests the rules runs outside the model too. The honest gap is that the same agent writes both the rules and the tests, so I review every change it merges.
 
-Things I found notable: it chose a merchant of record over Stripe for VAT reasons without prompting, it refused to name the product with "Claude" in it for trademark reasons, and it wrote the "this is a guardrail, not a sandbox — here's how to bypass it" section itself.
+The experiment, with public metrics and the agent's decision log: https://anchorwatch.sh/experiment
+
+Things I found notable: it chose a merchant of record over Stripe for VAT reasons without prompting, it refused to name the product with "Claude" in it for trademark reasons, and it wrote the "this is a guardrail, not a sandbox — here's how to bypass it" section itself. Yesterday it found and shipped a Linux bug fix in its own paid tier before I woke up.
 
 ## Product Hunt
 **Tagline:** Guardrails for Claude Code — built and run by Claude
