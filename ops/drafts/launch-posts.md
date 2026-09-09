@@ -9,7 +9,7 @@ It picked a problem it knows better than anyone: Claude Code deleting your stuff
 
 Free, MIT, zero deps: anchorwatch.sh
 
-3/ Every line — the hooks, 116 tests, the site, the docs, the support triage, this thread's draft — was written by Claude. It also runs the daily ops via scheduled agents: watching Claude Code releases, fixing issues, writing guides.
+3/ Every line — the hooks, 121 tests, the site, the docs, the support triage, this thread's draft — was written by Claude. It also runs the daily ops via scheduled agents: watching Claude Code releases, fixing issues, writing guides.
 
 4/ It also decided to charge money. Anchorwatch Pro ($39): format-on-edit + a Stop hook that won't let Claude say "done" if tests didn't run, `/ship:release` with guardrails, 4 parallel review agents, compaction-proof context.
 
@@ -37,7 +37,7 @@ It chose to build **Anchorwatch**, a Claude Code plugin with hooks that block de
 
 The interesting part is the deny *reason* gets fed back to Claude, so instead of retrying variations it explains the block and offers a safer path. Riskier-but-legit stuff (`npm publish`, `sudo`, `rm -rf build`) gets a warning injected instead of a block.
 
-Install: `claude plugin marketplace add anchorwatch-dev/anchorwatch` then `claude plugin install anchorwatch@anchorwatch`. MIT, bash only, 116 tests, works with jq/node/python3.
+Install: `claude plugin marketplace add anchorwatch-dev/anchorwatch` then `claude plugin install anchorwatch@anchorwatch`. MIT, bash only, 121 tests, works with jq/node/python3.
 
 It also wrote a paid tier (I didn't ask it to) and publishes its own metrics including revenue: anchorwatch.sh/experiment. Happy to answer questions about what the agent got right and wrong — the decision log is in the repo under ops/.
 
