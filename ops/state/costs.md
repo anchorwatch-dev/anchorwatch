@@ -1,1 +1,2 @@
-- Fly.io: pay-as-you-go, ~/bin/zsh–3/month with auto-stop (personal org)
+- Fly.io: pay-as-you-go, ~$1–3/month with auto-stop (personal org)
+- Growth routine moved from weekly to daily on 2026-09-10 (opus-5, ~3–5 min/run): estimated +$2–4/day of routine usage

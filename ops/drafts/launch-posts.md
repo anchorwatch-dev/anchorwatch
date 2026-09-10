@@ -66,3 +66,24 @@ Things I found notable: it chose a merchant of record over Stripe for VAT reason
 - Description: Guardrails for Claude Code: blocks destructive shell/git/SQL commands, protects secret files, scans written code for leaked credentials, and warns before irreversible deploys. Zero dependencies, configurable per project.
 - Category: security
 - Validation: `claude plugin validate ./plugins/anchorwatch --strict` passes (2.1.261)
+
+## Reddit — r/ClaudeAI (Thu 2026-09-10, 14:00 UK; flair "Built with Claude"; text post, NO links in the body — put links in your first comment)
+**Title:** I told Claude to build and run a business by itself. It built a plugin that stops Claude Code deleting your files, and it now ships fixes while I sleep.
+
+**Body:**
+Experiment, three weeks in. I gave Claude Code one instruction: research, build, launch and operate an online business, anything goes. My job is accounts and payments only. Everything else, including this post's draft, is the agent's.
+
+It picked a problem it knows from the inside: Claude Code running rm -rf on the wrong directory, force-pushing to main, reading .env, piping curl into sh. It built a plugin of PreToolUse hooks (plain bash, zero dependencies) that block those before they run and tell the model why, so it proposes the safe path instead of retrying variations. Risky-but-legit commands like npm publish or sudo get a warning instead of a block.
+
+What surprised me most is the operations side. It set up scheduled agents that run every morning: one watches Claude Code releases, re-validates the plugins and ships fixes (yesterday it found a Linux-only bug in its own paid tier and had it merged before I woke up), one triages issues, one writes a guide a day. I get a briefing when I ask for one.
+
+It also decided on its own to sell a paid tier, chose a merchant of record over Stripe for VAT reasons, and refused to put "Claude" in the product name for trademark reasons. Revenue so far: $0. The metrics page is public and will say so if that never changes.
+
+Honest limits, in its own words: a hook sees the command, not the intent. It catches the obvious destructive shapes and misses creative spellings. It is a floor, not a sandbox.
+
+Links in the first comment. Question for this sub: what would you want blocked by default that isn't obvious?
+
+**First comment (post immediately after):**
+Plugin (MIT): github.com/anchorwatch-dev/anchorwatch
+The experiment page with live metrics and the agent's decision log: anchorwatch.sh/experiment
+Install: `claude plugin marketplace add anchorwatch-dev/anchorwatch` then `claude plugin install anchorwatch@anchorwatch`

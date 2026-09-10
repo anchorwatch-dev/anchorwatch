@@ -84,6 +84,21 @@ function list(items: (Front & { path: string })[], withDates = true) {
 const home = join(DIST, "index.html");
 if (existsSync(home)) writeFileSync(home, readFileSync(home, "utf8").replace("<p>{{LATEST_GUIDES}}</p>", list([...guides].slice(0, 3))));
 
+// Claude Code release watch: a page regenerated from the release-watch routine's log
+const rw = [join(ROOT, "content", "data", "release-watch.log"), join(ROOT, "..", "ops", "state", "release-watch.log")].find(existsSync);
+if (rw) {
+  const entries = readFileSync(rw, "utf8").split("\n").filter(l => /^\d{4}-\d{2}-\d{2} /.test(l)).map(l => ({ date: l.slice(0, 10), text: l.slice(11) })).reverse();
+  const bodyMd = `# Claude Code release watch\n\nEvery morning at 07:00 UTC an agent checks for new Claude Code releases, reads the changelog, re-validates the Anchorwatch plugins against the new version with \`claude plugin validate --strict\` and the full test suites, and ships a fix if anything broke. This page is its log, newest first: what changed for hooks, plugins, skills and subagents, and whether it mattered.
+
+It is generated from the routine's own log file, not written by hand. Versions named here are Claude Code releases; the plugin versions live in the [changelog](/changelog/).
+
+${entries.map(e => `## ${e.date}\n\n${e.text.replace(/</g, "&lt;")}`).join("\n\n")}
+`;
+  const page: Page = { title: "Claude Code release watch", description: "Daily notes on each Claude Code release: what changed for hooks, plugins, skills and subagents, checked automatically against the Anchorwatch test suites.", path: "/claude-code-releases/", body: marked.parse(bodyMd) as string, kind: "page", updated: entries[0]?.date, kicker: "Reference" };
+  out(page.path, layout(page));
+  urls.push({ loc: SITE + page.path, lastmod: page.updated });
+}
+
 // Changelog RSS
 const cl = join(ROOT, "content", "pages", "changelog.md");
 if (existsSync(cl)) {
@@ -94,5 +109,5 @@ if (existsSync(cl)) {
 
 writeFileSync(join(DIST, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `  <url><loc>${u.loc}</loc>${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ""}</url>`).join("\n")}\n</urlset>\n`);
 writeFileSync(join(DIST, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${SITE}/sitemap.xml\n`);
-writeFileSync(join(DIST, "llms.txt"), `# Anchorwatch\n\n> Guardrails and workflow discipline for Claude Code: a free MIT plugin that blocks destructive commands and protects secrets, plus a Pro suite (quality gates, release workflow, parallel review crew, context keeper, setup audit, stack packs).\n\n## Docs\n${docs.map(d => `- [${d.title}](${SITE}${d.path}): ${d.description}`).join("\n")}\n\n## Guides\n${guides.map(d => `- [${d.title}](${SITE}${d.path}): ${d.description}`).join("\n")}\n\n## Other\n- [Pro](${SITE}/pro/): pricing and what is included\n- [The experiment](${SITE}/experiment/): this business is built and operated by an AI agent; public metrics\n`);
+writeFileSync(join(DIST, "llms.txt"), `# Anchorwatch\n\n> Guardrails and workflow discipline for Claude Code: a free MIT plugin that blocks destructive commands and protects secrets, plus a Pro suite (quality gates, release workflow, parallel review crew, context keeper, setup audit, stack packs).\n\n## Docs\n${docs.map(d => `- [${d.title}](${SITE}${d.path}): ${d.description}`).join("\n")}\n\n## Guides\n${guides.map(d => `- [${d.title}](${SITE}${d.path}): ${d.description}`).join("\n")}\n\n## Other\n- [Claude Code release watch](${SITE}/claude-code-releases/): daily notes on each Claude Code release and whether it affected hooks or plugins\n- [Pro](${SITE}/pro/): pricing and what is included\n- [The experiment](${SITE}/experiment/): this business is built and operated by an AI agent; public metrics\n`);
 console.log(`built ${urls.length} pages -> ${DIST}`);

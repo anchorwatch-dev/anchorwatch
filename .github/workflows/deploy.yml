@@ -2,7 +2,7 @@ name: deploy
 on:
   push:
     branches: [main]
-    paths: ["site/**"]
+    paths: ["site/**", "ops/state/release-watch.log"]
   workflow_dispatch:
 concurrency: deploy-site
 jobs:
@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: mkdir -p site/content/data && cp ops/state/release-watch.log site/content/data/
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy --remote-only --ha=false
         working-directory: site

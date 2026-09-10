@@ -12,6 +12,7 @@ description: Install, configure, and understand Anchorwatch guardrails for Claud
 <li><a href="/docs/configuration/"><span class="ic"><svg class="i" aria-hidden="true"><use href="#i-cog"/></svg></span><div><strong>Configuration</strong><span>Rule levels, allow patterns, protected branches, the kill switch.</span></div></a></li>
 <li><a href="/docs/rules/"><span class="ic"><svg class="i" aria-hidden="true"><use href="#i-shield"/></svg></span><div><strong>Rules reference</strong><span>All 24 rules, their defaults, what triggers them, and the safer alternative.</span></div></a></li>
 <li><a href="/docs/how-it-works/"><span class="ic"><svg class="i" aria-hidden="true"><use href="#i-layers"/></svg></span><div><strong>How it works</strong><span>The hook events, how a deny reaches Claude, performance, and what it deliberately doesn't do.</span></div></a></li>
+<li><a href="/claude-code-releases/"><span class="ic"><svg class="i" aria-hidden="true"><use href="#i-ship"/></svg></span><div><strong>Claude Code release watch</strong><span>Daily notes on each Claude Code release and whether it changed anything for hooks or plugins.</span></div></a></li>
 </ul></div>
 
 <div class="docgroup"><h2>Pro plugins</h2>
