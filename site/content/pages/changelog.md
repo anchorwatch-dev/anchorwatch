@@ -8,6 +8,7 @@ Subscribe via [RSS](/changelog.xml). Versions follow semver; the plugins pin `ve
 
 ## anchorwatch 0.1.1 — 2026-09-10
 - Fixed: the plugin manifest carried a `displayName` key that Claude Code 2.0.x rejects as invalid, so on those versions the plugin loaded zero hooks and silently protected nothing. Current Claude Code accepted the key, which is why validation and CI never caught it. The key is removed; every supported version now loads the hooks. If you are on Claude Code 2.0.x, update the plugin. The same fix ships in all Pro plugins today.
+- Pro: the same `displayName` fix ships today in all six Pro plugins (quality-gates 0.1.2, context-keeper 0.1.2, review-crew 0.1.1, ship 0.1.1, setup-audit 0.1.1, stack-packs 0.1.1). Pro buyers on Claude Code 2.0.x should update.
 - New: `plugins/anchorwatch-mod`, an experimental port of the eight block-level Bash rules to a Claude Code function hook ("mod"). Loads only behind `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1`; not marketplace-listed; the bash plugin remains the supported one.
 
 ## anchorwatch-pro: quality-gates 0.1.1, context-keeper 0.1.1 — 2026-09-08
