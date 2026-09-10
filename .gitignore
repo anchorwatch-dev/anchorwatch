@@ -8,3 +8,4 @@ site/data/*.db
 !.env.example
 site/data/
 !ops/state/*.log
+.claude/worktrees/
