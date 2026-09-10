@@ -1,6 +1,6 @@
 {
   "name": "anchorwatch",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Guardrails for Claude Code: blocks destructive shell/git/SQL commands, protects secret files, scans written code for leaked credentials, and warns before irreversible deploys. Zero dependencies, configurable per project.",
   "author": {
     "name": "Anchorwatch",
