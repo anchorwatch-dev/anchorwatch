@@ -1,12 +1,12 @@
 {
-  "generated": "2026-09-09T06:57:06.148Z",
+  "generated": "2026-09-10T06:57:28.184Z",
   "last30": {
-    "pageviews": 198,
-    "uniques": 68
+    "pageviews": 218,
+    "uniques": 75
   },
   "today": {
-    "pageviews": 1,
-    "uniques": 1
+    "pageviews": 7,
+    "uniques": 5
   },
   "daily": [
     {
@@ -26,18 +26,23 @@
     },
     {
       "day": "2026-09-09",
-      "pageviews": 1,
-      "uniques": 1
+      "pageviews": 14,
+      "uniques": 3
+    },
+    {
+      "day": "2026-09-10",
+      "pageviews": 7,
+      "uniques": 5
     }
   ],
   "pages": [
     {
       "path": "/",
-      "n": 77
+      "n": 82
     },
     {
       "path": "/experiment",
-      "n": 38
+      "n": 49
     },
     {
       "path": "/docs",
@@ -45,19 +50,19 @@
     },
     {
       "path": "/guides",
-      "n": 12
+      "n": 13
     },
     {
       "path": "/guides/claude-code-hooks-guide",
-      "n": 11
+      "n": 12
     },
     {
       "path": "/pro",
-      "n": 9
+      "n": 10
     },
     {
       "path": "/docs/install",
-      "n": 8
+      "n": 9
     },
     {
       "path": "/thanks",
@@ -107,6 +112,10 @@
     },
     {
       "ref": "t.co",
+      "n": 1
+    },
+    {
+      "ref": "fofa.info",
       "n": 1
     },
     {
