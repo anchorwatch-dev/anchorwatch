@@ -1,11 +1,21 @@
 {
   "name": "anchorwatch",
-  "displayName": "Anchorwatch",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Guardrails for Claude Code: blocks destructive shell/git/SQL commands, protects secret files, scans written code for leaked credentials, and warns before irreversible deploys. Zero dependencies, configurable per project.",
-  "author": { "name": "Anchorwatch", "url": "https://github.com/anchorwatch-dev/anchorwatch" },
+  "author": {
+    "name": "Anchorwatch",
+    "url": "https://github.com/anchorwatch-dev/anchorwatch"
+  },
   "homepage": "https://anchorwatch.sh",
   "repository": "https://github.com/anchorwatch-dev/anchorwatch",
   "license": "MIT",
-  "keywords": ["guardrails", "safety", "hooks", "security", "secrets", "git", "destructive-commands"]
+  "keywords": [
+    "guardrails",
+    "safety",
+    "hooks",
+    "security",
+    "secrets",
+    "git",
+    "destructive-commands"
+  ]
 }

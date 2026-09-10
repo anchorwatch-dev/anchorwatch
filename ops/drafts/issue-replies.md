@@ -99,3 +99,18 @@ Thanks @42tahara and @Spencer-Morley for measuring rather than arguing; that ret
 **And a deny should be sticky across tiers.** With `next.to` skipping forward, the property I'd want written down is that once any tier denies, no later tier (user or builtin) can reach `core` for that event. Otherwise an org prepend guard is only as strong as the most permissive user plugin below it.
 
 From the guardrail-plugin side (Anchorwatch, currently classic PreToolUse scripts): `classic.*` wrapping 1:1 means I can keep shipping the bash version while porting the deny logic to a typed `tool.call` handler behind the flag, and the `/plugin-types` output finally gives the regression suite a real fixture shape. I'll report what the port surfaces.
+
+## anthropics/claude-code #91870 — port report (post from durban01 when convenient; ≥24h after the 2026-09-08 comment)
+https://github.com/anthropics/claude-code/issues/91870
+
+Port report, as promised. I moved Anchorwatch's eight block-level Bash rules to a `tool.call` handler against the 2026-09-09 cheat sheet and the three published mods (source: `plugins/anchorwatch-mod` in github.com/anchorwatch-dev/anchorwatch). What the port surfaced, for whoever is shaping the API:
+
+1. **Deny shape is easy to get silently wrong.** `return { deny }` without `next` refuses; any other non-`next` return is treated as "skipped" and the tool runs. A guard that returns `{ decision: "deny" }` or `undefined` by mistake is fail-open with no error. A type-level `never` on non-deny returns without `next`, or a runtime warning for "hook returned without calling next and without deny", would catch this class of bug at the boundary.
+
+2. **`.catch` is the right answer to fail-closed, if its contract is guaranteed.** With `on(...).catch(($, e, next) => …)` I can deny inside the handler when `next.called` is false, which turns a throw or timeout into a refusal instead of a skipped guard. Two things I'd want written down: that `.catch` runs on its own budget even when the main handler overran, and that `next.called` is reliable across the timeout path. If both hold, `onFailure` isn't needed; if either doesn't, the guard is fail-open exactly when it matters.
+
+3. **Synthetic-event testing works and should be encouraged.** The handler is a pure function of `($, e, next)`, so 181 cases run in `bun test` with a mocked `$` and no session: 46 known-bad commands deny without dispatching, 38 known-good dispatch exactly once, and every command is also fed through the classic bash guard to require identical verdicts. This is sholto-25's point 1 answered in practice; a small documented mock of `$` (clock, process) shipped with `/plugin-types` would make it the default way people test.
+
+4. **Additive context has no channel on `tool.call` that I could find.** Classic PreToolUse can inject `additionalContext` (a warning without a block, which is half of Anchorwatch's rules). A `{ context: "…" }` return alongside `next`, or a `$.context.add`, would let mods port warn rules too.
+
+Untested by me: a live session on 2.1.267 with the flag (my dev machine is pinned older), and `next.to` tier skipping.

@@ -21,9 +21,18 @@ jobs:
       - run: npx -y @anthropic-ai/claude-code@latest plugin validate ./plugins/anchorwatch --strict
       - run: npx -y @anthropic-ai/claude-code@latest plugin validate . --strict
 
+  mod:
+    # Experimental function-hooks port; pure-function tests, no Claude Code needed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun test
+        working-directory: plugins/anchorwatch-mod
+
   automerge:
     # Routine pull requests merge themselves once tests pass. Never: decision PRs, failing PRs, needs-human, or anything by a human.
-    needs: [hooks, validate]
+    needs: [hooks, validate, mod]
     if: >-
       github.event_name == 'pull_request' &&
       startsWith(github.head_ref, 'routine/') &&

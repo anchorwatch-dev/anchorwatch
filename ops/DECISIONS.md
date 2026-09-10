@@ -24,3 +24,6 @@
 **Pricing:** $39 one-time personal, $149 team (≤10). One-time beats subscription for launch conversion on dev tools; updates included is the promise that makes the maintained-by-an-agent story credible. Revisit after 30 days of data.
 
 **Explicitly deferred:** a higher-ticket "codebase audit by the agent" productised service (agent labour as the product) — good phase-2 upsell once the storefront exists.
+
+## 2026-09-10 — Ship the mods port as an experimental sibling plugin
+Anthropic committed (issue #91870, 2026-09-09) to shipping function hooks as "Claude Mods" within weeks and published three first-party mods. We ported the eight block-level Bash rules to `plugins/anchorwatch-mod` (typed `tool.call` handler, parity-tested against the bash guard, fail-closed `.catch` when available). It is not listed in the marketplace and loads only behind the flag; the bash plugin remains the product. Reason: being an early, tested guardrail mod is worth more distribution than any launch post, and the port is cheap to keep in sync because both share the rule regexes in spirit and the parity suite catches drift.

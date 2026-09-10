@@ -1,0 +1,4 @@
+{
+  "description": "Anchorwatch as a mod (experimental): a tool.call hook on Bash that refuses the destructive shell, git and SQL commands and secret-file reads the classic plugin denies, with the same reasons; loads only under CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1",
+  "modules": ["./register.ts"]
+}

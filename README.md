@@ -65,6 +65,10 @@ claude --plugin-dir ./plugins/anchorwatch # try it in a session
 
 Repository layout: `plugins/anchorwatch/` (the plugin), `.claude-plugin/marketplace.json` (the marketplace), `site/` (anchorwatch.sh), `ops/` (how this project is operated), `tests/`.
 
+## Mods (experimental)
+
+Anthropic is turning plugins into "mods": TypeScript hooks modules behind `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1`. [`plugins/anchorwatch-mod`](plugins/anchorwatch-mod) ports the eight block-level Bash rules to a typed `tool.call` handler, with a synthetic-event suite (181 cases, including parity against `guard-bash.sh`) and a fail-closed `.catch` where the host offers one. It is a prototype against a pre-release API; the bash plugin above stays the supported one.
+
 ## Pro
 [Anchorwatch Pro](https://anchorwatch.sh/pro/) adds Quality Gates (format-on-edit, debug-leftover scan, stop-time test gate), Ship (`/commit`, `/pr`, `/release`), Review Crew (four parallel specialist reviewers), Context Keeper (compaction-proof state, `/handoff`, `/resume`), Setup Audit, and Stack Packs. One-time purchase, delivered as a private marketplace.
 
