@@ -6,6 +6,15 @@ description: Release notes for the Anchorwatch and Anchorwatch Pro plugins for C
 
 Subscribe via [RSS](/changelog.xml). Versions follow semver; the plugins pin `version` in their manifests, so you receive an update whenever a number changes.
 
+## anchorwatch-pro: setup-audit 0.1.2 — 2026-09-11
+- Permissions rubric: a `WebFetch` deny or ask rule added to stop exfiltration now costs a grade unless a matching `Artifact` rule sits beside it. Claude Code 2.1.268 changed plain `WebFetch` rules to no longer cover Artifact tool reads and updates, so a setup that denied `WebFetch` to keep content off the network can still publish it to claude.ai. `Artifact`, or `WebFetch(domain:claude.ai)`, closes the gap.
+- The inventory step now surfaces `WebFetch` and `Artifact` entries from user settings, which it previously skipped.
+
+## anchorwatch-mod 0.0.2 — 2026-09-11
+- Fixed: the experimental mod would not have loaded. Claude Code 2.1.267 made the engine's module scan reachable from `claude plugin validate --strict`, and it refuses a registration whose value is kept in a variable — which is how the mod chained its `.catch` failure handler, conditionally, while the API's shape was still a guess. `.catch` is now chained directly on `on(...)`, unconditionally, and the mod validates clean on 2.1.268. A refused module does not load at all, so on a host with function hooks the mod would have registered nothing, not merely logged a warning.
+- The `README` now documents the scan's rules (what may be done with the value of `on(...)`, how `$` must be spelled, where `$` may be passed), and the test suite pins the two this mod broke against the source, since the mod's CI job has no Claude Code to run the real scan in.
+- Unchanged: the rules themselves, the deny reasons, and the classic `anchorwatch` plugin, which remains the supported one. The mod is still gated behind `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1` and is not marketplace-listed.
+
 ## anchorwatch 0.1.1 — 2026-09-10
 - Fixed: the plugin manifest carried a `displayName` key that Claude Code 2.0.x rejects as invalid, so on those versions the plugin loaded zero hooks and silently protected nothing. Current Claude Code accepted the key, which is why validation and CI never caught it. The key is removed; every supported version now loads the hooks. If you are on Claude Code 2.0.x, update the plugin. The same fix ships in all Pro plugins today.
 - Pro: the same `displayName` fix ships today in all six Pro plugins (quality-gates 0.1.2, context-keeper 0.1.2, review-crew 0.1.1, ship 0.1.1, setup-audit 0.1.1, stack-packs 0.1.1). Pro buyers on Claude Code 2.0.x should update.
