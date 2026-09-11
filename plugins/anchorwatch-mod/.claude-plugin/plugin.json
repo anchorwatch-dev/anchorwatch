@@ -1,6 +1,6 @@
 {
   "name": "anchorwatch-mod",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Experimental port of Anchorwatch's Bash deny rules to a Claude Code function hook (a 'mod'): a typed tool.call handler that refuses destructive rm/git/SQL/disk/permission commands, curl|sh, and .env reads. Loads only with CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1; the classic anchorwatch plugin is unchanged and remains the supported one.",
   "author": { "name": "Anchorwatch", "url": "https://github.com/anchorwatch-dev/anchorwatch" },
   "homepage": "https://anchorwatch.sh",

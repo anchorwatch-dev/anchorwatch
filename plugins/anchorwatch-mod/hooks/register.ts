@@ -14,9 +14,16 @@ import { decide, denyText, type DecideContext } from './rules'
  * Failure mode: the engine skips a hook that throws or overruns its 10 s
  * budget, and the tool runs (fail-open). The API's answer is `.catch` on
  * the registration, which runs on a grace budget and answers instead; we
- * chain it when the host offers it and deny there, so a broken guard says
- * no rather than nothing. A host without `.catch` (2.1.263) keeps the
- * fail-open default; the README says so.
+ * chain it and deny there, so a broken guard says no rather than nothing.
+ *
+ * `.catch` is chained directly on the `on(...)` call, and the registration
+ * is never held in a variable. That is not style: the engine scans the
+ * module before it links it and refuses one whose registration value "is
+ * kept (assigned, passed, read, or returned from a nested function)" — it
+ * "takes .catch(handler) where it is called and nothing else", and one
+ * `.catch` at that. Feature-detecting `.catch` (which this did while the
+ * shape was a guess) is therefore not expressible, and needs not be: a
+ * host that links mods at all is a host that ran that scan.
  *
  * `$` usage is deliberately small: `$.process.run` (git, read-only) to
  * learn the current branch when a force push names no refspec, and
@@ -33,7 +40,7 @@ export function register(on: On, _options?: unknown) {
     return next(e)
   })
 
-  const registration = on('tool.call', { tool: 'Bash' }, async ($, e, next) => {
+  on('tool.call', { tool: 'Bash' }, async ($, e, next) => {
     const command = commandOf(e)
     if (command === undefined) return next(e)
 
@@ -48,32 +55,18 @@ export function register(on: On, _options?: unknown) {
     if (deny) return { deny: denyText(deny) }
 
     return next(e)
+  }).catch((_$, _e, next) => {
+    // If we had already dispatched beneath, the tool ran: replay so the
+    // model sees its real result. Otherwise the guard never answered:
+    // fail closed.
+    if (next.called) return next(_e)
+    const kind = next.error?.kind ?? 'error'
+    return {
+      deny:
+        `Anchorwatch guard failed to run (${kind}${next.error?.message ? ': ' + next.error.message : ''}). ` +
+        'The command was not executed because the guard could not check it. Tell the user; do not retry blindly.',
+    }
   })
-
-  // `.catch` is the cheat sheet's (2026-09-09) declared failure handler. It
-  // is absent on builds before it landed; chaining conditionally keeps the
-  // module loadable there.
-  const catchable = registration as unknown as { catch?: (fn: unknown) => unknown } | undefined
-  if (catchable && typeof catchable.catch === 'function') {
-    catchable.catch(
-      (
-        _$: unknown,
-        _e: unknown,
-        next: { called?: boolean; error?: { kind?: string; message?: string } } & ((e: unknown) => unknown),
-      ) => {
-        // If we had already dispatched beneath, the tool ran: replay so the
-        // model sees its real result. Otherwise the guard never answered:
-        // fail closed.
-        if (next.called) return next(_e)
-        const kind = next.error?.kind ?? 'error'
-        return {
-          deny:
-            `Anchorwatch guard failed to run (${kind}${next.error?.message ? ': ' + next.error.message : ''}). ` +
-            'The command was not executed because the guard could not check it. Tell the user; do not retry blindly.',
-        }
-      },
-    )
-  }
 }
 
 /**
