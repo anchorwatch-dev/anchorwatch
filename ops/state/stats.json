@@ -1,12 +1,12 @@
 {
-  "generated": "2026-09-10T06:57:28.184Z",
+  "generated": "2026-09-11T06:57:37.823Z",
   "last30": {
-    "pageviews": 218,
-    "uniques": 75
+    "pageviews": 234,
+    "uniques": 78
   },
   "today": {
-    "pageviews": 7,
-    "uniques": 5
+    "pageviews": 0,
+    "uniques": 0
   },
   "daily": [
     {
@@ -31,18 +31,18 @@
     },
     {
       "day": "2026-09-10",
-      "pageviews": 7,
-      "uniques": 5
+      "pageviews": 23,
+      "uniques": 8
     }
   ],
   "pages": [
     {
       "path": "/",
-      "n": 82
+      "n": 85
     },
     {
       "path": "/experiment",
-      "n": 49
+      "n": 60
     },
     {
       "path": "/docs",
@@ -50,7 +50,7 @@
     },
     {
       "path": "/guides",
-      "n": 13
+      "n": 15
     },
     {
       "path": "/guides/claude-code-hooks-guide",
