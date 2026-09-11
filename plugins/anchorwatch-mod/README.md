@@ -41,14 +41,42 @@ anthropics/claude-code#91870), the three first-party mods under
 | Allow | `return next(e)`: every hook beneath, then core runs the tool; resolves with the result. |
 | Deny | `return { deny: "reason" }` **without** calling `next`. Only that is a refusal: a hook that returns anything else without calling `next` is skipped and the tool runs. An empty reason was treated as allow on 2.1.260 (fixed by 2.1.261); the model routes around a reason it cannot read, so the text matters. |
 | Order | Five tiers, `prepend > user > append > builtin > core`; earlier registration wraps later ("order is nesting"). A `--plugin-dir` mod sits in the `user` tier. `tool.call` wraps `classic.PreToolUse`, so this hook runs before the classic bash guard. |
-| Failure mode | A throw or a 10 s overrun **skips the hook and the tool runs** (fail-open), logged as `hook failed: <plugin>: … (tool.call; skipped; what is below it ran in its place)`. There is no `onFailure`/fail-closed flag; the maintainers declined one. The cheat sheet's answer is `on(...).catch(($, e, next) => …)`, run on a grace budget with `next.called` and `next.error { kind, message, budget }`. This mod chains `.catch` when the host returns a registration with it, and denies there unless `next` had already dispatched (then it replays so the model sees the real result). On builds where `on()` returns nothing (2.1.263), the hook is still registered and the default fail-open applies. |
+| Failure mode | A throw or a 10 s overrun **skips the hook and the tool runs** (fail-open), logged as `hook failed: <plugin>: … (tool.call; skipped; what is below it ran in its place)`. There is no `onFailure`/fail-closed flag; the maintainers declined one. The answer is `on(...).catch(($, e, next) => …)`, run on a grace budget with `next.called` and `next.error { kind, message, budget }`. This mod chains `.catch` at the call site and denies there unless `next` had already dispatched (then it replays so the model sees the real result). The chain is unconditional: the engine's module scan refuses a registration whose value is kept, so feature-detecting `.catch` is not expressible — see *Scan rules* below. |
 | `$` used | `$.process.run` (git, read-only, only for a force push with no refspec) bounded by `$.clock.sleep`. A missing noun unloads the *whole* module at `$` build time, so the surface is kept small on purpose. |
 
 Ambiguities we could not resolve from the source: the exact `options` argument
-to `register`; whether `.catch` is present on the build you have (it is on the
-2026-09-09 cheat sheet, not in probes of 2.1.263); one maintainer sketch wrote
-`e.input.command` where the cheat sheet and a measured probe use `e.command`
-(the hook accepts both).
+to `register`; one maintainer sketch wrote `e.input.command` where the cheat
+sheet and a measured probe use `e.command` (the hook accepts both).
+
+## Scan rules
+
+Since 2.1.267, `claude plugin validate <mod> --strict` runs the engine's own
+module scan — the same scan that runs when a host links the mod, so a module
+it refuses does not load at all. Its refusals are the API's rules stated
+outright, and they are narrower than the prose suggested. The ones that bind
+this mod:
+
+- The value of `on(...)` may not be **kept** — "assigned, passed, read, or
+  returned from a nested function". It "takes `.catch(handler)` where it is
+  called and nothing else", and one `.catch`: `.catch(...)` followed by
+  another member is refused.
+- `$` is always spelled `$.noun.event(...)` at the call site. Binding,
+  passing, spreading, returning or reading `$`, a noun of it, or an event of
+  it is refused. `$` may be passed only into a function declared at the top
+  of the same file — never across an import. (`currentBranchOf` is exactly
+  that, and validate reports `calls: $.clock.sleep (via currentBranchOf),
+  $.process.run (via currentBranchOf)`.)
+- `on` is always `on("<event>", hook)` with a literal event, `next.to` always
+  `next.to(e, "<tier>")`, and the hook is a function literal or the name of
+  one declared at the top of the file. `next` may not be bound or assigned to
+  another name.
+- No top-level `await` in a file the entry imports.
+
+Run it before trusting a change:
+
+```sh
+npx -y @anthropic-ai/claude-code@latest plugin validate plugins/anchorwatch-mod --strict
+```
 
 ## Types
 
@@ -72,7 +100,9 @@ cd plugins/anchorwatch-mod && bun test
 with a non-empty reason; every known-good command must call `next` once and
 pass its result through; the `.catch` path must deny when the guard never
 dispatched. It then runs the same commands through the classic
-`guard-bash.sh` and requires the verdicts to match.
+`guard-bash.sh` and requires the verdicts to match, and pins the two scan
+rules above against the `register.ts` source — this job has no Claude Code,
+so the real scan cannot run in it.
 
 ## Try it live
 
@@ -88,11 +118,12 @@ to protected branch 'main' …)` and no push.
 ## Status
 
 Verified: the synthetic-event suite and the parity check against the classic
-guard (181 tests, `bun test`), and `claude plugin validate` on the manifest.
+guard (182 tests, `bun test`), and `claude plugin validate
+plugins/anchorwatch-mod --strict` on 2.1.268 — manifest, hooks manifest and
+the engine's module scan, which reports the hooks and the `$` calls it found.
 
-Not verified: a live session. The machine this was written on runs Claude
-Code 2.0.53, which has no function hooks; there the flag is ignored, the
-module never loads, and a probe (`-p --plugin-dir … --allowedTools
-"Bash(cat .env)"` against a throwaway `.env`) ran the command. Whether the
-hook fires under a >= 2.1.263 build, and whether `.catch` is offered there,
-remains to be measured with the command above.
+Not verified: a live session. Whether the hook fires, and what `next.error`
+carries when it does, remains to be measured with the command above. Until
+2.1.267 the scan was not reachable either, and the first shape this mod
+shipped with — a kept registration, `.catch` chained only when the host
+offered it — was one the scan refuses, so it would not have loaded at all.

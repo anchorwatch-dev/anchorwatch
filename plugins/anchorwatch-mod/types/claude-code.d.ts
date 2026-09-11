@@ -11,6 +11,11 @@
  * three first-party mods under anthropics/claude-code/mods, and measured
  * probes reported in anthropics/claude-code#91870.
  *
+ * Since 2.1.267 there is a second, harder authority: `claude plugin
+ * validate <mod> --strict` runs the engine's own module scan, and its
+ * refusals state the API's rules outright. Where this file disagreed with
+ * those refusals, the refusals won (see `Registration` and `On`).
+ *
  * Replace this file with the `/plugin-types` output when available; the
  * mod's own code should compile unchanged against it. Anything here that
  * the real declarations contradict is a bug in this file, not the engine.
@@ -112,19 +117,28 @@ declare module 'claude-code' {
     next: CatchNext<EventMap[K], ResultOf[K]>,
   ) => ResultOf[K] | Promise<ResultOf[K]>
 
-  /** What `on(...)` returns: chainable `.catch` (cheat sheet 2026-09-09; absent on 2.1.263). */
+  /**
+   * What `on(...)` returns. `catch` returns `void`, not the registration:
+   * the engine's module scan refuses `.catch(...)` "followed by another
+   * member; a registration takes one .catch", so the type will not let you
+   * write what the scan would reject.
+   */
   interface Registration<K extends EventName> {
-    catch: (fn: CatchHandler<K>) => Registration<K>
+    catch: (fn: CatchHandler<K>) => void
   }
 
-  /** The registrar handed to `register(on, options)`. */
+  /**
+   * The registrar handed to `register(on, options)`. It always returns a
+   * registration: the scan requires `.catch` to be chained where `on` is
+   * called, so a host that links a mod cannot be one that returns nothing.
+   */
   interface On {
-    <K extends EventName>(event: K, handler: Handler<K>): Registration<K> | void
+    <K extends EventName>(event: K, handler: Handler<K>): Registration<K>
     <K extends EventName>(
       event: K,
       matcher: Partial<Record<string, string | readonly string[]>>,
       handler: Handler<K>,
-    ): Registration<K> | void
+    ): Registration<K>
   }
 
   type Register = (on: On, options?: unknown) => void

@@ -9,7 +9,7 @@
  */
 import { describe, expect, test } from 'bun:test'
 import { spawnSync } from 'node:child_process'
-import { mkdtempSync, rmSync } from 'node:fs'
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
@@ -172,12 +172,12 @@ describe('decide: context', () => {
 
 type Handler = (...args: unknown[]) => unknown
 
-function registered(opts: { withCatch: boolean; branch?: string }) {
+function registered(opts: { branch?: string } = {}) {
   const handlers = new Map<string, Handler>()
   let caught: Handler | undefined
   const on = (event: string, ...rest: unknown[]) => {
     handlers.set(event, rest[rest.length - 1] as Handler)
-    return opts.withCatch ? { catch: (fn: Handler) => (caught = fn) } : undefined
+    return { catch: (fn: Handler) => (caught = fn) }
   }
   register(on as never)
   const $ = {
@@ -207,7 +207,7 @@ function registered(opts: { withCatch: boolean; branch?: string }) {
 
 describe('tool.call hook', () => {
   test('denies without calling next, with a non-empty reason', async () => {
-    const mod = registered({ withCatch: true })
+    const mod = registered()
     for (const [cmd, rule] of KNOWN_BAD) {
       const { result, calls } = await mod.call(cmd)
       expect(calls).toBe(0)
@@ -218,7 +218,7 @@ describe('tool.call hook', () => {
   })
 
   test('allows by calling next exactly once and returning its result untouched', async () => {
-    const mod = registered({ withCatch: true })
+    const mod = registered()
     for (const cmd of KNOWN_GOOD) {
       const { result, calls } = await mod.call(cmd)
       expect(calls).toBe(1)
@@ -228,16 +228,16 @@ describe('tool.call hook', () => {
   })
 
   test('force push with no refspec asks git for the branch through $', async () => {
-    const onMain = registered({ withCatch: false, branch: 'main' })
+    const onMain = registered({ branch: 'main' })
     expect((await onMain.call('git push --force')).result.deny).toContain('git-force-push-protected')
-    const onFeature = registered({ withCatch: false, branch: 'feature/x' })
+    const onFeature = registered({ branch: 'feature/x' })
     expect((await onFeature.call('git push --force')).calls).toBe(1)
-    const unknown = registered({ withCatch: false })
+    const unknown = registered()
     expect((await unknown.call('git push --force')).calls).toBe(1)
   })
 
   test('an event with no command string passes through', async () => {
-    const mod = registered({ withCatch: false })
+    const mod = registered()
     const handler = mod.handlers.get('tool.call')!
     let calls = 0
     const result = await handler(mod.$, { tool: 'Bash', tool_use_id: 'x' }, async () => {
@@ -252,17 +252,14 @@ describe('tool.call hook', () => {
     const seen: unknown[][] = []
     register(((...args: unknown[]) => {
       seen.push(args)
+      return { catch: () => {} }
     }) as never)
     const toolCall = seen.find(a => a[0] === 'tool.call')!
     expect(toolCall[1]).toEqual({ tool: 'Bash' })
   })
 
-  test('loads when on() returns nothing (no .catch on the host)', () => {
-    expect(() => register((() => undefined) as never)).not.toThrow()
-  })
-
   test('.catch: fails closed when the guard never dispatched, replays when it had', async () => {
-    const mod = registered({ withCatch: true })
+    const mod = registered()
     const caught = mod.caught()!
     const e = { tool: 'Bash', tool_use_id: 'x', command: 'ls' }
     const notCalled = Object.assign(async () => ({ result: 'replayed' }), {
@@ -273,6 +270,36 @@ describe('tool.call hook', () => {
     expect(denied.deny).toContain('Anchorwatch guard failed to run (timeout')
     const wasCalled = Object.assign(async () => ({ result: 'replayed' }), { called: true, error: { kind: 'throw' } })
     expect(await caught(mod.$, e, wasCalled)).toEqual({ result: 'replayed' })
+  })
+})
+
+// ---------------------------------------------------------------------------
+// The engine's module scan, as far as this suite can stand in for it.
+//
+// `claude plugin validate plugins/anchorwatch-mod --strict` runs the real
+// scan, and the same scan runs when a host links the mod: a module it
+// refuses does not load at all, so these are load-bearing, not lint. This
+// job has no Claude Code (bun only), so the two rules this mod broke are
+// pinned here against the register.ts source.
+
+describe('registration shape the engine scan requires', () => {
+  const source = readFileSync(join(import.meta.dir, '..', 'hooks', 'register.ts'), 'utf8')
+
+  test('the value of on(...) is never kept', () => {
+    // "the value of on("tool.call") is kept (assigned, passed, read, or
+    // returned from a nested function); it takes .catch(handler) where it is
+    // called and nothing else" — plugin validate, 2.1.268.
+    expect(source).not.toMatch(/(?:const|let|var)\s+[\w$]+\s*(?::[^=]+)?=\s*on\s*\(/)
+    expect(source).not.toMatch(/[\w$]+\s*\(\s*on\s*\(/)
+  })
+
+  test('.catch is chained where on() is called, once, unconditionally', () => {
+    const catches = source.match(/\)\s*\.catch\(/g) ?? []
+    expect(catches).toHaveLength(1)
+    // No feature detection: `typeof x.catch === 'function'` is how this was
+    // written while the shape was a guess, and the scan rejects reading the
+    // registration to test it.
+    expect(source).not.toMatch(/typeof[^\n]*\.catch/)
   })
 })
 
