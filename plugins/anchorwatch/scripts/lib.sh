@@ -3,7 +3,7 @@
 # Bash 3.2+ compatible (macOS default). Needs one JSON parser: jq (preferred), node, or python3.
 # Every hook script sources this file, then calls aw_read_input.
 
-AW_VERSION="0.1.0"
+AW_VERSION="0.1.2"
 AW_INPUT=""
 AW_CWD=""
 AW_CONFIG_JSON=""
@@ -119,6 +119,28 @@ aw_json_str() {
 }
 
 aw_lower() { printf '%s' "$1" | tr '[:upper:]' '[:lower:]'; }
+
+# aw_is_secret_path <path> -> 0 if the path names a secret-bearing file.
+# The one list behind both secret-files (Edit/Write) and secret-write (shell
+# redirects, tee, cp/mv, sed -i), so the two cannot drift. Callers expand ~ and
+# make the path absolute first; the directory cases below need that.
+aw_is_secret_path() {
+  local abs="$1" low
+  [ -z "$abs" ] && return 1
+  low="$(aw_lower "${abs##*/}")"
+  case "$low" in
+    .env.example|.env.sample|.env.template|.env.dist|.env.schema) return 1 ;;
+    .env|.env.*) return 0 ;;
+    *.pem|*.key|*.p12|*.pfx|*.jks|*.keystore|*.asc|*.gpg) return 0 ;;
+    id_rsa|id_ed25519|id_ecdsa|id_dsa) return 0 ;;
+    credentials|credentials.json|credentials.yml|credentials.yaml|secrets.json|secrets.yml|secrets.yaml|.netrc|_netrc|.npmrc|.pypirc|.git-credentials|.docker-config.json) return 0 ;;
+    *service-account*.json|*serviceaccount*.json) return 0 ;;
+  esac
+  case "$abs" in
+    "$HOME/.ssh/"*|"$HOME/.aws/"*|"$HOME/.config/gh/"*|"$HOME/.docker/config.json"|"$HOME/.kube/"*|"$HOME/.gnupg/"*|"$HOME/.azure/"*|"$HOME/.config/gcloud/"*) return 0 ;;
+  esac
+  return 1
+}
 
 # Config: nearest .anchorwatch.json walking up from cwd, else ~/.anchorwatch.json
 aw_load_config() {

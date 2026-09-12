@@ -15,12 +15,20 @@ shell scripts. It is a prototype written against a pre-release API.
 
 ## What it ports
 
-The eight rules whose default level is `block` in `guard-bash.sh`, with the
+The nine rules whose default level is `block` in `guard-bash.sh`, with the
 same regexes, the same segment split (`&&`, `||`, `;`, `|`, newline) and the
 same reason text:
 
 `rm-recursive-dangerous`, `git-force-push-protected`, `git-destructive`,
-`sql-destructive`, `pipe-to-shell`, `disk-destroy`, `perm-broad`, `env-read`.
+`sql-destructive`, `pipe-to-shell`, `disk-destroy`, `perm-broad`, `env-read`,
+`secret-write`.
+
+`secret-write` needs a path, not just a regex: it resolves each write
+destination a segment has (redirection, `tee`, a `cp`/`mv` target, `sed -i`,
+`dd of=`) against `cwd` and classifies it with `isSecretPath`, the port of
+`lib.sh`'s `aw_is_secret_path`. With no `home` in context a `~` path keeps its
+basename, which is what catches `~/.ssh/id_rsa` anyway; `~/.aws/config` and
+the other directory-only cases need `home`.
 
 Not ported (yet): the warn rules (there is no verified additive-context
 channel on `tool.call`), `.anchorwatch.json` overrides (rule levels, `allow`

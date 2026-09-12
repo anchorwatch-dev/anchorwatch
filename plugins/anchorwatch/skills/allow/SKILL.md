@@ -18,7 +18,7 @@ Anchorwatch reads `.anchorwatch.json` from the project root (nearest ancestor of
 ```
 
 Rule ids (run `bash "${CLAUDE_PLUGIN_ROOT}/scripts/aw.sh" rules` for the full table with defaults):
-`rm-recursive-dangerous`, `rm-recursive`, `git-force-push-protected`, `git-force-push`, `git-push-delete`, `git-destructive`, `sql-destructive`, `pipe-to-shell`, `disk-destroy`, `perm-broad`, `env-read`, `env-dump`, `publish`, `sudo`, `kill-broad`, `system-config`, `secret-files`, `git-internals`, `lockfiles`, `self-config`, `infra-files`, `outside-project`, `secret-read`, `secret-scan`.
+`rm-recursive-dangerous`, `rm-recursive`, `git-force-push-protected`, `git-force-push`, `git-push-delete`, `git-destructive`, `sql-destructive`, `pipe-to-shell`, `disk-destroy`, `perm-broad`, `env-read`, `secret-write`, `env-dump`, `publish`, `sudo`, `kill-broad`, `system-config`, `secret-files`, `git-internals`, `lockfiles`, `self-config`, `infra-files`, `outside-project`, `secret-read`, `secret-scan`.
 
 Procedure:
 1. Read the existing `.anchorwatch.json` if present (create it at the project root otherwise).

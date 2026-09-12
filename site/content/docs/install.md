@@ -23,7 +23,7 @@ Or inside a Claude Code session:
 /plugin install anchorwatch@anchorwatch
 ```
 
-On Claude Code 2.1.268 and newer, installing from the `/plugin` menu takes effect as soon as you close the menu. On older versions, start a new session or run `/reload-plugins`. Either way you should see a line like *"Anchorwatch guardrails active (v0.1.0): 11 blocking, 13 warning rules"* in Claude's context at session start.
+On Claude Code 2.1.268 and newer, installing from the `/plugin` menu takes effect as soon as you close the menu. On older versions, start a new session or run `/reload-plugins`. Either way you should see a line like *"Anchorwatch guardrails active (v0.1.2): 12 blocking, 13 warning rules"* in Claude's context at session start.
 
 ## Verify
 

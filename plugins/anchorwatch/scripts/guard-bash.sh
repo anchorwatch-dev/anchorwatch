@@ -35,6 +35,47 @@ is_dangerous_target() {
   return 1
 }
 
+# is_secret_dest <token> — does this write destination name a secret-bearing file?
+is_secret_dest() {
+  local t="$1"
+  t="${t%\"}"; t="${t#\"}"; t="${t%\'}"; t="${t#\'}"
+  case "$t" in ""|-|/dev/*|\&*) return 1 ;; esac
+  case "$t" in "~"*) t="$HOME${t#\~}" ;; esac
+  case "$t" in /*) ;; *) t="$AW_CWD/$t" ;; esac
+  aw_is_secret_path "$t"
+}
+
+# write_dests <segment> — the files this segment writes, one per line.
+# Redirections (`>`, `>>`, `2>`), tee, cp/mv/install/rsync destinations,
+# in-place editors (sed -i, perl -pi) and dd of=. Over-collects harmlessly:
+# only a token that matches a secret path is acted on.
+write_dests() {
+  local seg="$1" tok prev="" last="" ip=0
+  # Space out glued redirection operators so ">.env" tokenises as "> .env".
+  for tok in $(printf '%s' "$seg" | sed -E 's/([0-9]?>>?)/ \1 /g'); do
+    case "$prev" in ">"|">>"|[0-9]">"|[0-9]">>") printf '%s\n' "$tok" ;; esac
+    prev="$tok"
+  done
+  set -- $seg
+  case "${1:-}" in sudo) shift ;; esac
+  case "${1:-}" in
+    tee)
+      shift
+      for tok in "$@"; do case "$tok" in -*) ;; *) printf '%s\n' "$tok" ;; esac; done ;;
+    cp|mv|install|rsync)
+      for tok in "$@"; do case "$tok" in -*) ;; *) last="$tok" ;; esac; done
+      [ -n "$last" ] && printf '%s\n' "$last" ;;
+    sed|perl|ruby)
+      shift
+      for tok in "$@"; do case "$tok" in -*i*) ip=1 ;; esac; done
+      if [ "$ip" = 1 ]; then
+        for tok in "$@"; do case "$tok" in -*|s/*|*=*) ;; *) printf '%s\n' "$tok" ;; esac; done
+      fi ;;
+    dd)
+      for tok in "$@"; do case "$tok" in of=*) printf '%s\n' "${tok#of=}" ;; esac; done ;;
+  esac
+}
+
 while IFS= read -r seg; do
   [ -z "$seg" ] && continue
   low="$(aw_lower "$seg")"
@@ -110,6 +151,21 @@ EOL
      && ! printf '%s' "$seg" | grep -Eq '\.env\.(example|sample|template|dist)([[:space:]]|$)'; then
     apply env-read block "this prints a .env file (secrets) into the conversation. List variable names instead: grep -oE '^[A-Za-z_][A-Za-z0-9_]*' .env — or ask the user for the specific value you need."
   fi
+  # --- Writing a secret file from the shell ---
+  # secret-files only sees Edit/Write tool calls; `tee .env`, `> .env`, `cp x .env`
+  # and `sed -i … .env` reach the same file through Bash. Claude Code 2.1.269 closed
+  # the matching hole in its own engine (an Edit() deny rule did not cover the file a
+  # Bash `tee` wrote); this closes it for the rule.
+  while IFS= read -r dest; do
+    [ -z "$dest" ] && continue
+    if is_secret_dest "$dest"; then
+      apply secret-write block "this writes to a secret-bearing file ($dest) from the shell — the same files secret-files protects from Edit/Write. Secrets belong to the user: ask them to set the value, or write a placeholder to .env.example instead."
+      break
+    fi
+  done <<EOL
+$(write_dests "$seg")
+EOL
+
   if printf '%s' "$seg" | grep -Eq '^(sudo[[:space:]]+)?(printenv|env|set|export -p)[[:space:]]*$' \
      && ! printf '%s' "$CMD" | grep -Eq '(printenv|env|set|export -p)[[:space:]]*\|[[:space:]]*(grep|rg|egrep|fgrep|awk)[[:space:]]'; then
     apply env-dump warn "dumping the whole environment can expose secrets in the transcript; grep for the specific variable instead"

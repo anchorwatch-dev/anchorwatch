@@ -65,7 +65,7 @@ description: A free, MIT-licensed Claude Code plugin that blocks destructive com
 <text x="90" y="103" text-anchor="middle" class="t strong">Claude</text><text x="90" y="124" text-anchor="middle" class="t sub">proposes a call</text>
 <rect class="node mid" x="300" y="56" width="220" height="104" rx="14"/>
 <text x="410" y="90" text-anchor="middle" class="t mid strong">Anchorwatch</text>
-<text x="410" y="111" text-anchor="middle" class="t mid sub">PreToolUse hook · 24 rules · ~20 ms</text>
+<text x="410" y="111" text-anchor="middle" class="t mid sub">PreToolUse hook · 25 rules · ~20 ms</text>
 <text x="410" y="140" text-anchor="middle" class="t mono"><tspan class="k-deny">deny</tspan><tspan class="mid sub"> · </tspan><tspan class="k-warn">warn</tspan><tspan class="mid sub"> · </tspan><tspan class="k-ok">pass</tspan></text>
 <rect class="node" x="650" y="70" width="120" height="76" rx="12"/>
 <text x="710" y="103" text-anchor="middle" class="t strong">Your repo</text><text x="710" y="124" text-anchor="middle" class="t sub">files, git, db</text>

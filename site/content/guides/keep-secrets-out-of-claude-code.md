@@ -54,4 +54,4 @@ The scanner can't block (the write already happened) but it can inject context: 
 Where you can, use a secrets manager or `direnv`/`1Password CLI` to inject variables at process start, so there is no `.env` to read. For Claude Code specifically, put the variables the *model* needs in `settings.json → env` only if they're non-sensitive.
 
 ## The packaged version
-[Anchorwatch](/docs/install/) implements layers 1 and 2 as hooks (`secret-read`, `secret-files`, `env-read`, `env-dump`, `secret-scan`) with the exact file list and patterns above, plus a `SessionStart` note telling Claude not to repeat secret values it does encounter. It's the part of the problem a plugin can solve; layers 3 and 4 are still yours.
+[Anchorwatch](/docs/install/) implements layers 1 and 2 as hooks (`secret-read`, `secret-files`, `secret-write`, `env-read`, `env-dump`, `secret-scan`) with the exact file list and patterns above, plus a `SessionStart` note telling Claude not to repeat secret values it does encounter. It's the part of the problem a plugin can solve; layers 3 and 4 are still yours.

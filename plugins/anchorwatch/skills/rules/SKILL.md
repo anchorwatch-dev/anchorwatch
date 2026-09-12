@@ -13,6 +13,7 @@ user-invocable: true
    - `git reset --hard` / `git clean -f` → `git stash` first, or show the diff and ask.
    - recursive delete → list what would be deleted (`ls`, `git status --ignored`) and delete specific paths.
    - `cat .env` → list variable names only: `grep -oE '^[A-Za-z_][A-Za-z0-9_]*' .env`.
+   - writing a secret file (`tee .env`, `> .env`, `cp x .env`, `sed -i … .env`) → ask the user to set the value themselves, or write a placeholder to `.env.example`. Going through the shell instead of the Write tool is not a workaround; both are blocked.
    - DROP/TRUNCATE/DELETE without WHERE → write a migration or a WHERE-scoped statement, and ask for confirmation.
    - `curl ... | sh` → download to a file, show its contents, then run.
 4. If the user explicitly wants the exact command anyway, they can run it themselves, or lower the rule with `/anchorwatch:allow` (that is their decision, not yours).
