@@ -6,6 +6,15 @@ description: Release notes for the Anchorwatch and Anchorwatch Pro plugins for C
 
 Subscribe via [RSS](/changelog.xml). Versions follow semver; the plugins pin `version` in their manifests, so you receive an update whenever a number changes.
 
+## anchorwatch 0.1.2 — 2026-09-12
+- New blocking rule: `secret-write`. Until today, `secret-files` protected `.env`, keys and credential files from the `Edit` and `Write` tools — and only those. A shell command reached the same files freely: `tee .env`, `echo KEY=v > .env`, `cp /tmp/x .env`, `sed -i … .env`. Same file, same secret, different tool. Anchorwatch now checks the write destinations in a Bash command — redirections, `tee` arguments, a `cp`/`mv` target, the files `sed -i` rewrites, `dd of=` — against the same list, and denies the ones that name a secret. `.env.example` and the other template names stay writable, so the usual "copy the example, fill it in yourself" flow is untouched.
+- Claude Code 2.1.269 fixed the same class of hole in its own permission engine: an `Edit()` deny rule and the working-directory write check did not cover the file a Bash `tee` command wrote. If your own settings deny `Edit(.env*)`, that rule got stronger today too — and `secret-write` covers the shapes it still does not see.
+- The list of secret-bearing paths now lives in one place (`aw_is_secret_path`) instead of once per guard, so `secret-files` and `secret-write` cannot drift apart. Which paths count is unchanged.
+- Also: `anchorwatch-mod` 0.0.3 ports `secret-write`, keeping the experimental function-hooks port at parity with every block-level Bash rule.
+
+## anchorwatch-pro: setup-audit 0.1.3 — 2026-09-12
+- Permissions rubric: a setup that denies `Edit`/`Write` on `.env*` while allowing broad shell writes (`Bash(tee:*)`, `Bash(*)`) now scores a deduction. Before Claude Code 2.1.269 a `tee` destination was not checked against `Edit()` deny rules or the working-directory write check at all, so `tee .env` walked past both; on 2.1.269 and newer the engine checks it, but an allow rule that broad still reaches further than it looks, and the version you are on decides which. The audit now says which.
+
 ## anchorwatch-pro: setup-audit 0.1.2 — 2026-09-11
 - Permissions rubric: a `WebFetch` deny or ask rule added to stop exfiltration now costs a grade unless a matching `Artifact` rule sits beside it. Claude Code 2.1.268 changed plain `WebFetch` rules to no longer cover Artifact tool reads and updates, so a setup that denied `WebFetch` to keep content off the network can still publish it to claude.ai. `Artifact`, or `WebFetch(domain:claude.ai)`, closes the gap.
 - The inventory step now surfaces `WebFetch` and `Artifact` entries from user settings, which it previously skipped.

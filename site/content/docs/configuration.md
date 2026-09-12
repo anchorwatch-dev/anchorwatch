@@ -44,6 +44,7 @@ Set `ANCHORWATCH_DISABLE=1` in the environment where Claude Code runs to bypass 
 
 ## Recommendations
 - Leave every `block` rule alone unless you have a specific, recurring false positive — then add a narrow `allow` pattern for that exact command.
-- Lower `env-read` to `warn` only if your `.env` files hold no real secrets (e.g. docker-compose local defaults).
+- Lower `env-read` to `warn` only if your `.env` files hold no real secrets (e.g. docker-compose local defaults). The same caveat applies to `secret-write`: lower it and a shell command may write your `.env` in place.
+- If a setup script genuinely needs to generate a key or seed an `.env` from a template, prefer a narrow `allow` pattern (`"^bash scripts/bootstrap-env\\.sh$"`) over turning `secret-write` off.
 - Set `publish` to `block` in repos where a deploy from a Claude session must never happen without a human.
 - Commit the project `.anchorwatch.json` so the whole team shares the same rules.

@@ -7,7 +7,7 @@
  * synthetic commands. The regexes are the bash script's POSIX EREs with
  * `[[:space:]]` written `\s`; the segment split is lib.sh's `aw_segments`.
  *
- * Only rules whose default level is `block` are ported. The classic
+ * Only the nine rules whose default level is `block` are ported. The classic
  * plugin's warn rules (rm-recursive, git-force-push on a feature branch,
  * publish, sudo, ...) are not: `tool.call` has no additive-context
  * channel in the API we could verify, so a warning would have no home.
@@ -22,6 +22,7 @@ export type RuleId =
   | 'disk-destroy'
   | 'perm-broad'
   | 'env-read'
+  | 'secret-write'
 
 export type Deny = { rule: RuleId; reason: string }
 
@@ -77,6 +78,108 @@ const PERM_BROAD = /chmod\s+(-R\s+)?(777|a\+rwx)(\s|$)|chown\s+-R\s+[^\s]+\s+\/(
 const ENV_READ =
   /(^|\s)(cat|less|more|head|tail|bat|type|Get-Content)\s+([^|;&]*[\s/])?\.env(\.[a-zA-Z0-9_-]+)?(\s|$)/
 const ENV_EXAMPLE = /\.env\.(example|sample|template|dist)(\s|$)/
+
+// --- Secret-bearing paths: lib.sh `aw_is_secret_path` ---
+
+const SECRET_EXEMPT = new Set(['.env.example', '.env.sample', '.env.template', '.env.dist', '.env.schema'])
+const SECRET_NAMES = new Set([
+  'id_rsa',
+  'id_ed25519',
+  'id_ecdsa',
+  'id_dsa',
+  'credentials',
+  'credentials.json',
+  'credentials.yml',
+  'credentials.yaml',
+  'secrets.json',
+  'secrets.yml',
+  'secrets.yaml',
+  '.netrc',
+  '_netrc',
+  '.npmrc',
+  '.pypirc',
+  '.git-credentials',
+  '.docker-config.json',
+])
+const SECRET_EXTS = ['.pem', '.key', '.p12', '.pfx', '.jks', '.keystore', '.asc', '.gpg']
+const SECRET_DIRS = ['/.ssh/', '/.aws/', '/.config/gh/', '/.kube/', '/.gnupg/', '/.azure/', '/.config/gcloud/']
+
+/** lib.sh `aw_is_secret_path`, on a path whose `~` the caller already expanded. */
+export function isSecretPath(path: string, ctx: DecideContext = {}): boolean {
+  if (!path) return false
+  const low = (path.split('/').pop() ?? '').toLowerCase()
+  if (SECRET_EXEMPT.has(low)) return false
+  if (low === '.env' || low.startsWith('.env.')) return true
+  if (SECRET_EXTS.some(e => low.endsWith(e))) return true
+  if (SECRET_NAMES.has(low)) return true
+  if (low.endsWith('.json') && /service-?account/.test(low)) return true
+  if (ctx.home !== undefined) {
+    if (path === ctx.home + '/.docker/config.json') return true
+    if (SECRET_DIRS.some(d => path.startsWith(ctx.home + d))) return true
+  }
+  return false
+}
+
+/**
+ * guard-bash.sh `is_secret_dest`: strip one layer of quotes, expand `~` and
+ * resolve against cwd, then classify. With no `home` in context a `~` path
+ * keeps its basename, which is what catches `~/.ssh/id_rsa` anyway.
+ */
+export function isSecretDest(token: string, ctx: DecideContext = {}): boolean {
+  let t = token.replace(/^["']/, '').replace(/["']$/, '')
+  if (t === '' || t === '-' || t.startsWith('/dev/') || t.startsWith('&')) return false
+  if (t.startsWith('~')) {
+    if (ctx.home === undefined) return isSecretPath(t, ctx)
+    t = ctx.home + t.slice(1)
+  } else if (!t.startsWith('/')) {
+    t = (ctx.cwd ?? '') + '/' + t
+  }
+  return isSecretPath(t, ctx)
+}
+
+/**
+ * guard-bash.sh `write_dests`: the files a segment writes — redirections,
+ * `tee` arguments, a `cp`/`mv`/`install`/`rsync` destination, the files an
+ * in-place editor rewrites, and `dd of=`. Over-collects harmlessly: a token
+ * only matters if it names a secret path.
+ */
+export function writeDests(segment: string): string[] {
+  const dests: string[] = []
+  const spaced = segment.replace(/([0-9]?>>?)/g, ' $1 ').trim().split(/\s+/)
+  for (let i = 1; i < spaced.length; i++) {
+    if (/^[0-9]?>>?$/.test(spaced[i - 1])) dests.push(spaced[i])
+  }
+  const toks = segment.trim().split(/\s+/).filter(t => t.length > 0)
+  if (toks[0] === 'sudo') toks.shift()
+  const args = toks.slice(1)
+  switch (toks[0]) {
+    case 'tee':
+      for (const tok of args) if (!tok.startsWith('-')) dests.push(tok)
+      break
+    case 'cp':
+    case 'mv':
+    case 'install':
+    case 'rsync': {
+      const positional = toks.filter(t => !t.startsWith('-'))
+      const last = positional[positional.length - 1]
+      if (last !== undefined) dests.push(last)
+      break
+    }
+    case 'sed':
+    case 'perl':
+    case 'ruby':
+      if (args.some(t => /^-[^\s]*i/.test(t))) {
+        for (const tok of args) {
+          if (!tok.startsWith('-') && !tok.startsWith('s/') && !tok.includes('=')) dests.push(tok)
+        }
+      }
+      break
+    case 'dd':
+      for (const tok of toks) if (tok.startsWith('of=')) dests.push(tok.slice(3))
+      break
+  }
+  return dests
+}
 
 const DANGEROUS_LITERALS = new Set([
   '',
@@ -247,6 +350,19 @@ export function decide(command: string, ctx: DecideContext = {}): Deny | null {
         reason:
           'this prints a .env file (secrets) into the conversation. List variable names instead: ' +
           "grep -oE '^[A-Za-z_][A-Za-z0-9_]*' .env — or ask the user for the specific value you need.",
+      }
+    }
+
+    // --- Writing a secret file from the shell (what the Edit/Write guard cannot see) ---
+    for (const dest of writeDests(seg)) {
+      if (isSecretDest(dest, ctx)) {
+        return {
+          rule: 'secret-write',
+          reason:
+            `this writes to a secret-bearing file (${dest}) from the shell — the same files secret-files ` +
+            'protects from Edit/Write. Secrets belong to the user: ask them to set the value, or write a ' +
+            'placeholder to .env.example instead.',
+        }
       }
     }
   }

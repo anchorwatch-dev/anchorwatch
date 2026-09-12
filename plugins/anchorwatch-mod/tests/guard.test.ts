@@ -13,7 +13,7 @@ import { mkdtempSync, readFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
-import { decide, denyText, pushBranch, segments } from '../hooks/rules'
+import { decide, denyText, isSecretDest, pushBranch, segments, writeDests } from '../hooks/rules'
 import { register } from '../hooks/register'
 
 const PROJ = mkdtempSync(join(tmpdir(), 'anchorwatch-mod-'))
@@ -67,6 +67,16 @@ const KNOWN_BAD: Array<[string, string]> = [
   ['cat .env.local', 'env-read'],
   ['head -5 ./config/.env.production', 'env-read'],
   ['npm test && tail .env', 'env-read'],
+  ['tee .env', 'secret-write'],
+  ['echo FOO=bar > .env', 'secret-write'],
+  ['printf "%s" x >> .env.production', 'secret-write'],
+  ['echo done > ./config/.env.local', 'secret-write'],
+  ['cp /tmp/leak .env', 'secret-write'],
+  ['mv /tmp/k server.key', 'secret-write'],
+  ['sed -i.bak s/a/b/ .env', 'secret-write'],
+  ['tee -a config/credentials.json', 'secret-write'],
+  ['dd of=.env.local if=/tmp/seed', 'secret-write'],
+  ['sudo tee ~/.ssh/id_rsa', 'secret-write'],
 ]
 
 // The pass and warn rows of tests/run.sh: warn rules are not ported, so they must pass here.
@@ -107,6 +117,12 @@ const KNOWN_GOOD: string[] = [
   'killall node',
   'echo "export FOO=1" >> ~/.zshrc',
   'echo hi >> notes.txt',
+  'echo "KEY=placeholder" > .env.example',
+  'cp .env.example .env.sample',
+  'echo x > src/app.ts',
+  'sed -i s/a/b/ src/app.ts',
+  'npm test 2>&1 | tee /tmp/out.log',
+  'cp src/a.ts src/b.ts',
   'ls -la',
   'bun test',
   '',
@@ -126,6 +142,30 @@ describe('pushBranch', () => {
     expect(pushBranch('git push -f origin refs/heads/release')).toBe('release')
     expect(pushBranch('git push --force')).toBeUndefined()
     expect(pushBranch('git push --force origin')).toBeUndefined()
+  })
+})
+
+describe('writeDests / isSecretDest', () => {
+  test('finds the files a segment writes', () => {
+    expect(writeDests('echo x > .env')).toEqual(['.env'])
+    expect(writeDests('printf x >>.env.local')).toEqual(['.env.local'])
+    expect(writeDests('npm test 2>&1')).toEqual(['&1'])
+    expect(writeDests('tee -a .env')).toEqual(['.env'])
+    expect(writeDests('cp -f /tmp/x .env')).toEqual(['.env'])
+    expect(writeDests('sed -i.bak s/a/b/ .env')).toEqual(['.env'])
+    expect(writeDests('sed s/a/b/ .env')).toEqual([])
+    expect(writeDests('dd of=.env if=/tmp/x')).toEqual(['.env'])
+    expect(writeDests('grep -oE "^[A-Za-z_]+" .env')).toEqual([])
+  })
+  test('classifies destinations like aw_is_secret_path', () => {
+    expect(isSecretDest('.env', { cwd: '/p' })).toBe(true)
+    expect(isSecretDest('"server.key"', { cwd: '/p' })).toBe(true)
+    expect(isSecretDest('.env.example', { cwd: '/p' })).toBe(false)
+    expect(isSecretDest('&1', { cwd: '/p' })).toBe(false)
+    expect(isSecretDest('/dev/null', { cwd: '/p' })).toBe(false)
+    expect(isSecretDest('~/.ssh/config', { cwd: '/p', home: '/h' })).toBe(true)
+    expect(isSecretDest('~/.ssh/config', { cwd: '/p' })).toBe(false)
+    expect(isSecretDest('notes.txt', { cwd: '/p' })).toBe(false)
   })
 })
 

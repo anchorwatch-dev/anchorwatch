@@ -24,22 +24,8 @@ case "$FILE" in /*) ABS="$FILE" ;; *) ABS="$AW_CWD/$FILE" ;; esac
 BASE="$(basename "$ABS")"
 LOWBASE="$(aw_lower "$BASE")"
 
-# --- Secret-bearing files ---
-is_secret_file() {
-  case "$LOWBASE" in
-    .env.example|.env.sample|.env.template|.env.dist|.env.schema) return 1 ;;
-    .env|.env.*) return 0 ;;
-    *.pem|*.key|*.p12|*.pfx|*.jks|*.keystore|*.asc|*.gpg) return 0 ;;
-    id_rsa|id_ed25519|id_ecdsa|id_dsa) return 0 ;;
-    credentials|credentials.json|credentials.yml|credentials.yaml|secrets.json|secrets.yml|secrets.yaml|.netrc|_netrc|.npmrc|.pypirc|.git-credentials|.docker-config.json) return 0 ;;
-    *service-account*.json|*serviceaccount*.json) return 0 ;;
-  esac
-  case "$ABS" in
-    "$HOME/.ssh/"*|"$HOME/.aws/"*|"$HOME/.config/gh/"*|"$HOME/.docker/config.json"|"$HOME/.kube/"*|"$HOME/.gnupg/"*|"$HOME/.azure/"*|"$HOME/.config/gcloud/"*) return 0 ;;
-  esac
-  return 1
-}
-if is_secret_file; then
+# --- Secret-bearing files (the list lives in lib.sh; the bash guard shares it) ---
+if aw_is_secret_path "$ABS"; then
   apply secret-files block "writing to a secret-bearing file ($FILE). Secrets must be managed by the user; ask them to add or change the value, or write to .env.example with a placeholder instead."
 fi
 

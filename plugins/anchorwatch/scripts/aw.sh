@@ -18,6 +18,7 @@ pipe-to-shell             block    curl/wget ... | sh
 disk-destroy              block    mkfs, dd if=, fdisk, parted, shred, > /dev/sdX
 perm-broad                block    chmod 777, chown -R ... /
 env-read                  block    cat/head/tail/less of .env files (prints secrets into the transcript)
+secret-write              block    shell writes to a secret file: > .env, tee, cp/mv into it, sed -i, dd of=
 env-dump                  warn     printenv / env / set with no filter
 publish                   warn     npm publish, gh release create, docker push, fly deploy, terraform apply, kubectl delete, ...
 sudo                      warn     any sudo

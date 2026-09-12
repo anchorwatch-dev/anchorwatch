@@ -43,7 +43,7 @@ $ git push --force origin main
 Claude then says something like: *"The force push to main was blocked by a guardrail. I've pushed the rebased commits to `fix/auth-retry` instead — want me to open a PR?"* That is exactly the behaviour you want.
 
 ## Install it
-[Anchorwatch](/) is that guard, packaged as a Claude Code plugin with 24 rules, tests for every rule, and a per-project `.anchorwatch.json` for the cases where you *do* want `rm -rf ./dist` to pass silently:
+[Anchorwatch](/) is that guard, packaged as a Claude Code plugin with 25 rules, tests for every rule, and a per-project `.anchorwatch.json` for the cases where you *do* want `rm -rf ./dist` to pass silently:
 
 ```bash
 claude plugin marketplace add anchorwatch-dev/anchorwatch
