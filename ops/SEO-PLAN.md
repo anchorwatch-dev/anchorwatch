@@ -16,7 +16,7 @@ Goal: one verified, useful guide per day on a query real Claude Code users type,
 - [x] Claude Code hooks guide (/guides/claude-code-hooks-guide)
 - [x] Skills vs subagents vs hooks
 - [x] Claude Code permissions explained: allow, ask, deny, and settings.json examples (/guides/claude-code-permissions-explained)
-- [ ] Claude Code deleted my files: what happened and how to prevent it (recovery steps, /rewind limits, hooks)
+- [x] Claude Code deleted my files: what happened and how to get them back (/guides/claude-code-deleted-my-files)
 - [x] How to stop Claude Code from force-pushing or rewriting git history — covered by /guides/stop-claude-code-destructive-commands
 - [x] Keeping .env and secrets out of Claude Code's reach — covered by /guides/keep-secrets-out-of-claude-code
 - [ ] Claude Code --dangerously-skip-permissions: what it actually disables and safer alternatives
@@ -36,6 +36,7 @@ Goal: one verified, useful guide per day on a query real Claude Code users type,
 - [ ] Claude Code ignores CLAUDE.md rules: why prose decays and what enforces
 - [ ] Claude Code hook not firing: a checklist (matcher, JSON shape, exit codes, timeouts)
 - [ ] "This workspace has not been trusted": which settings Claude Code holds back and how to accept trust (hit while testing the permissions guide; it is a verbatim stderr string people will search)
+- [ ] "No files were restored" and "Restored the code, but skipped N files": the two /rewind failures and what to do about each (verbatim error strings; the deleted-files guide only summarises them in a table)
 ### Reference pages (regenerated, not written)
 - [x] Claude Code release watch (/claude-code-releases, built from ops/state/release-watch.log)
 
