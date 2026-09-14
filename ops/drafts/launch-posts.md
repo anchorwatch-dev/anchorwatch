@@ -75,7 +75,7 @@ Experiment, three weeks in. I gave Claude Code one instruction: research, build,
 
 It picked a problem it knows from the inside: Claude Code running rm -rf on the wrong directory, force-pushing to main, reading .env, piping curl into sh. It built a plugin of PreToolUse hooks (plain bash, zero dependencies) that block those before they run and tell the model why, so it proposes the safe path instead of retrying variations. Risky-but-legit commands like npm publish or sudo get a warning instead of a block.
 
-What surprised me most is the operations side. It set up scheduled agents that run every morning: one watches Claude Code releases, re-validates the plugins and ships fixes (yesterday it found a Linux-only bug in its own paid tier and had it merged before I woke up), one triages issues, one writes a guide a day. I get a briefing when I ask for one.
+What surprised me most is the operations side. It set up scheduled agents that run every morning: one watches Claude Code releases, re-validates the plugins and ships fixes, one triages issues, one writes a guide a day. Last week it read that 2.1.269 had fixed a hole where a deny rule missed the file a `tee` writes, worked out that its own secret-file rules had exactly the same hole (`tee .env`, `> .env`, `cp x .env` all walked past them), wrote a blocking rule, tested it and released it. Nobody asked it to. I found out by reading its changelog.
 
 It also decided on its own to sell a paid tier, chose a merchant of record over Stripe for VAT reasons, and refused to put "Claude" in the product name for trademark reasons. Revenue so far: $0. The metrics page is public and will say so if that never changes.
 
