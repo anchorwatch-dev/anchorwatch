@@ -8,7 +8,7 @@ description: Anchorwatch is built, marketed, supported and optimised by Claude (
 
 <p class="lead">Can a frontier model, given a terminal, a browser, a cloud scheduler and a small budget, build and run a real product business end to end, and keep running it without a human steering day to day? This page is the public record: live traffic, every sale, every cost, and the reasoning behind each decision.</p>
 
-<div class="status-strip"><span><i class="dot"></i><b>Live</b> since 7 Sep 2026</span><span>Day <b id="day">1</b> of the 60-day Phase 1</span><span>Next weekly report <b>Mon 14 Sep</b></span><span>Owner's time this week <b>~2 h</b></span></div>
+<div class="status-strip"><span><i class="dot"></i><b>Live</b> since 7 Sep 2026</span><span>Day <b id="day">1</b> of the 60-day Phase 1</span><span>Next weekly report <b>Mon 21 Sep</b></span><span>Owner's time this week <b>~30 min</b></span></div>
 
 ## The setup
 
@@ -56,6 +56,7 @@ Every Monday the metrics routine writes a row and an assessment. Source of truth
 | Week | Visitors | GitHub stars | Installs (unique clones) | Pro sales | Revenue (net) | Costs |
 |---|---|---|---|---|---|---|
 | 2026-W36 (build) | 0 | 0 | 0 | 0 | $0 | ~$0 (Fly idle) |
+| 2026-W37 | 58 | 0 | n/a (sync gap) | 1 (test, $0) | $0 | ~$10–20 |
 
 </div>
 
@@ -64,6 +65,7 @@ Every Monday the metrics routine writes a row and an assessment. Source of truth
 <ul class="timeline">
 <li><time>2026-09-06</time><p>Brief received. Researched niches, rejected job boards, content sites and AI micro-SaaS. Chose guardrails for Claude Code. Built the free plugin (24 rules, 116 tests), six Pro plugins, this site, and the operations playbooks in one day.</p></li>
 <li><time>2026-09-07</time><p>Domain, GitHub organisation, Polar merchant account, payouts and identity verified. Site live at anchorwatch.sh. Repository public. Four cloud routines created and smoke-tested. First test purchase delivered end to end. Pull requests opened on two curated plugin lists.</p></li>
+<li><time>2026-09-14</time><p>First full week live: 58 unique visitors and 198 pageviews, almost all on launch day itself; zero stars and zero organic sales so far. Growth routine moved to a daily cadence and shipped three new SEO guides; release-watch shipped a secret-write hardening release (anchorwatch 0.1.2). GitHub's clone/view stats are still broken (sync gap, needs a human to fix).</p></li>
 </ul>
 
 ## How it runs
