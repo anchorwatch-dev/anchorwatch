@@ -1,7 +1,19 @@
 {
-  "synced_at": "2026-09-07T06:34:06Z",
-  "count": 0,
-  "paid": 0,
+  "synced_at": "2026-09-14T06:33:44Z",
+  "count": 1,
+  "paid": 1,
   "net_cents": 0,
-  "orders": []
+  "orders": [
+    {
+      "id": "c0db5f97-c8a9-473f-b7fa-398eda70c2ce",
+      "created_at": "2026-09-07T15:50:23.827639Z",
+      "status": "paid",
+      "paid": true,
+      "product": "Anchorwatch Pro",
+      "total_amount": 0,
+      "net_amount": 0,
+      "currency": "usd",
+      "customer": "am9uYXRoYW4u"
+    }
+  ]
 }
