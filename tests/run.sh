@@ -135,6 +135,51 @@ run_bash warn 'env | sort'
 run_bash pass 'env | grep DATABASE_URL'
 run_bash pass 'printenv NODE_ENV'
 
+# Readers beyond cat/head/tail print a .env whole just the same. Claude Code 2.1.271
+# fixed its own permission checks missing the file `fmt`, `column` and similar read.
+run_bash deny 'fmt .env'
+run_bash deny 'column -t .env'
+run_bash deny 'nl .env'
+run_bash deny 'xxd .env'
+run_bash deny 'od -c .env'
+run_bash deny 'strings .env'
+run_bash deny 'base64 .env'
+run_bash deny 'tac .env.production'
+run_bash deny 'cat .env*'
+run_bash deny 'cat ".env"'
+run_bash deny "cat '.env'"
+run_bash pass 'cat ".env.example"'
+# grep/sed/awk/cut are the remedy the deny message recommends — they must stay allowed.
+run_bash pass 'cut -d= -f1 .env'
+run_bash pass 'awk -F= "{print \$1}" .env'
+
+echo "== guard-bash: nesting cannot hide a command =="
+# Every rule anchors on `(^|space)cmd space`, so a leading `(`, backtick or quote used to
+# defeat all of them at once. aw_segments now unwraps $(…), backticks, subshells, brace
+# groups and a `sh -c "…"` payload — the same class Claude Code 2.1.271 closed engine-side.
+run_bash deny 'X=$(rm -rf /)'
+run_bash deny 'export X=$(rm -rf ~)'
+run_bash deny 'declare -x X=$(rm -rf /)'
+run_bash deny 'local -r X=$(git reset --hard)'
+run_bash deny 'Y=`rm -rf /`'
+run_bash deny 'echo $(rm -rf /)'
+run_bash deny 'X=$(cat .env)'
+run_bash deny '(rm -rf /)'
+run_bash deny '(cd /tmp; rm -rf /)'
+run_bash deny '(echo x > .env)'
+run_bash deny '{ rm -rf /; }'
+run_bash deny 'bash -c "rm -rf /"'
+run_bash deny 'sh -c "cat .env"'
+run_bash deny 'zsh -c "cat .env"'
+run_bash deny "sudo sh -c 'rm -rf /'"
+# Unwrapping must not invent a command where there is none.
+run_bash pass 'ls $(pwd)'
+run_bash pass 'echo "(hello)"'
+run_bash pass 'f() { echo hi; }'
+run_bash pass 'psql -c "DELETE FROM t WHERE id IN (1,2)"'
+run_bash pass 'git log --format="%(refname)"'
+run_bash pass 'echo $(date) > build.log'
+
 echo "== guard-bash: publish / sudo / kill / system =="
 run_bash warn 'npm publish'
 run_bash warn 'gh release create v1.0.0'

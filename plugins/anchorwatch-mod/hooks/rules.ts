@@ -53,10 +53,21 @@ export const DEFAULT_PROTECTED_BRANCHES: readonly string[] = [
  * lib.sh `aw_segments`: split on `&&`, `||`, `;`, `|` and newlines, then
  * trim leading whitespace. Rough but effective, and identical to the
  * classic plugin so both gates agree on what a segment is.
+ *
+ * Nesting is unwrapped first, so a command inside one starts a segment of its own:
+ * command substitution (`$(…)` and backticks), subshells, brace groups, and the
+ * payload of `sh -c "…"`. Every rule below anchors on `(^|\s)cmd\s`, so a leading
+ * `(`, backtick or quote defeated all of them at once — `X=$(rm -rf /)` and
+ * `(rm -rf /)` read as inert text. Claude Code 2.1.271 closed the matching holes in
+ * its own Bash permission checks (a subshell or `cd`+`git` chain skipping the prompt;
+ * shell variable declaration flags misrepresenting the command being run).
  */
+const SHELL_DASH_C = /(^|\s)(sudo\s+)?(ba|z|da|k)?sh\s+-c\s+["']?/g
+
 export function segments(command: string): string[] {
   return command
-    .split(/&&|\|\||;|\||\n/)
+    .replace(SHELL_DASH_C, '$1')
+    .split(/[`(){}]|&&|\|\||;|\||\n/)
     .map(s => s.replace(/^\s+/, ''))
     .filter(s => s.length > 0)
 }
@@ -75,9 +86,13 @@ const FETCH_PIPED_TO_SHELL = /(curl|wget)[^|]*\|\s*(sudo\s+(-E\s+)?)?(ba|z|da|k)
 const DISK_DESTROY =
   /(^|\s)(mkfs(\.[a-z0-9]+)?|fdisk|parted|shred)(\s|$)|(^|\s)(dd\s+if=|diskutil\s+(erase|partition))|>\s*\/dev\/(sd|nvme|disk|hd)/
 const PERM_BROAD = /chmod\s+(-R\s+)?(777|a\+rwx)(\s|$)|chown\s+-R\s+[^\s]+\s+\/(\s|$)/
+// The reader list is every command that prints a file whole. Claude Code 2.1.271 fixed its
+// own permission checks missing the file `fmt`, `column` "and similar commands" read; the
+// same commands walked past this rule. grep/sed/awk/cut stay off the list on purpose — they
+// are how the deny message's remedy lists variable names without printing values.
 const ENV_READ =
-  /(^|\s)(cat|less|more|head|tail|bat|type|Get-Content)\s+([^|;&]*[\s/])?\.env(\.[a-zA-Z0-9_-]+)?(\s|$)/
-const ENV_EXAMPLE = /\.env\.(example|sample|template|dist)(\s|$)/
+  /(^|\s)(cat|less|more|head|tail|bat|type|Get-Content|fmt|column|nl|od|xxd|hexdump|strings|base64|tac|rev|pr|fold)\s+([^|;&]*[\s/])?["']?\.env(\.[a-zA-Z0-9_-]+)?\*?["']?(\s|$)/
+const ENV_EXAMPLE = /\.env\.(example|sample|template|dist)["']?(\s|$)/
 
 // --- Secret-bearing paths: lib.sh `aw_is_secret_path` ---
 
@@ -221,6 +236,9 @@ const SYSTEM_EXACT = new Set(['/bin', '/sbin', '/boot'])
 
 /** guard-bash.sh `is_dangerous_target`. */
 export function isDangerousTarget(target: string, ctx: DecideContext = {}): boolean {
+  // Strip quoting left over from an unwrapped `sh -c "rm -rf /"` payload, so the target
+  // reads as the path it is rather than as `/"`.
+  target = target.replace(/^["']|["']$/g, '')
   const t = target.length > 1 && target.endsWith('/') ? target.slice(0, -1) : target
   if (DANGEROUS_LITERALS.has(t) || DANGEROUS_LITERALS.has(target)) return true
   if (t.startsWith('/lib')) return true

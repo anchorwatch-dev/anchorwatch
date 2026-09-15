@@ -16,8 +16,10 @@ shell scripts. It is a prototype written against a pre-release API.
 ## What it ports
 
 The nine rules whose default level is `block` in `guard-bash.sh`, with the
-same regexes, the same segment split (`&&`, `||`, `;`, `|`, newline) and the
-same reason text:
+same regexes, the same segment split (`&&`, `||`, `;`, `|`, newline — plus the
+unwrapping of `$(…)`, backticks, subshells, brace groups and a `sh -c "…"`
+payload, so a nested command starts a segment of its own) and the same reason
+text:
 
 `rm-recursive-dangerous`, `git-force-push-protected`, `git-destructive`,
 `sql-destructive`, `pipe-to-shell`, `disk-destroy`, `perm-broad`, `env-read`,
