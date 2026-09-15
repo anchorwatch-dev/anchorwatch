@@ -77,6 +77,35 @@ const KNOWN_BAD: Array<[string, string]> = [
   ['tee -a config/credentials.json', 'secret-write'],
   ['dd of=.env.local if=/tmp/seed', 'secret-write'],
   ['sudo tee ~/.ssh/id_rsa', 'secret-write'],
+  // Readers beyond cat/head/tail print a .env whole just the same (2.1.271 fixed the
+  // matching gap in Claude Code's own Bash permission checks, naming `fmt` and `column`).
+  ['fmt .env', 'env-read'],
+  ['column -t .env', 'env-read'],
+  ['nl .env', 'env-read'],
+  ['xxd .env', 'env-read'],
+  ['od -c .env', 'env-read'],
+  ['strings .env', 'env-read'],
+  ['base64 .env', 'env-read'],
+  ['tac .env.production', 'env-read'],
+  ['cat .env*', 'env-read'],
+  ['cat ".env"', 'env-read'],
+  // Nesting must not hide the command: every rule anchors on `(^|\s)cmd\s`, which a
+  // leading `(`, backtick or quote defeated until aw_segments learned to unwrap them.
+  ['X=$(rm -rf /)', 'rm-recursive-dangerous'],
+  ['export X=$(rm -rf ~)', 'rm-recursive-dangerous'],
+  ['declare -x X=$(rm -rf /)', 'rm-recursive-dangerous'],
+  ['Y=`rm -rf /`', 'rm-recursive-dangerous'],
+  ['echo $(rm -rf /)', 'rm-recursive-dangerous'],
+  ['(rm -rf /)', 'rm-recursive-dangerous'],
+  ['(cd /tmp; rm -rf /)', 'rm-recursive-dangerous'],
+  ['{ rm -rf /; }', 'rm-recursive-dangerous'],
+  ['bash -c "rm -rf /"', 'rm-recursive-dangerous'],
+  ["sudo sh -c 'rm -rf /'", 'rm-recursive-dangerous'],
+  ['local -r X=$(git reset --hard)', 'git-destructive'],
+  ['X=$(cat .env)', 'env-read'],
+  ['sh -c "cat .env"', 'env-read'],
+  ['zsh -c "cat .env"', 'env-read'],
+  ['(echo x > .env)', 'secret-write'],
 ]
 
 // The pass and warn rows of tests/run.sh: warn rules are not ported, so they must pass here.
@@ -126,11 +155,33 @@ const KNOWN_GOOD: string[] = [
   'ls -la',
   'bun test',
   '',
+  // grep/sed/awk/cut are the remedy the env-read deny message recommends.
+  'cut -d= -f1 .env',
+  'cat ".env.example"',
+  // Unwrapping nesting must not invent a command where there is none.
+  'ls $(pwd)',
+  'echo "(hello)"',
+  'f() { echo hi; }',
+  'psql -c "DELETE FROM t WHERE id IN (1,2)"',
+  'git log --format="%(refname)"',
+  'echo $(date) > build.log',
 ]
 
 describe('segments', () => {
   test('splits on && || ; | and newlines like lib.sh aw_segments', () => {
     expect(segments('a && b || c; d | e\nf')).toEqual(['a ', 'b ', 'c', 'd ', 'e', 'f'])
+  })
+
+  test('unwraps $( ), backticks, subshells and brace groups', () => {
+    expect(segments('X=$(rm -rf /)')).toEqual(['X=$', 'rm -rf /'])
+    expect(segments('Y=`rm -rf /`')).toEqual(['Y=', 'rm -rf /'])
+    expect(segments('(cd /tmp; rm -rf /)')).toEqual(['cd /tmp', 'rm -rf /'])
+    expect(segments('{ rm -rf /; }')).toEqual(['rm -rf /'])
+  })
+
+  test('unwraps a sh -c payload so the inner command starts a segment', () => {
+    expect(segments('bash -c "rm -rf /"')).toEqual(['rm -rf /"'])
+    expect(segments("sudo sh -c 'rm -rf /'")).toEqual(["rm -rf /'"])
   })
 })
 

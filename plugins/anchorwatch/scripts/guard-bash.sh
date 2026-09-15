@@ -23,6 +23,9 @@ apply() {
 # Dangerous rm targets: filesystem roots, home, cwd itself, globs, system dirs, parent refs.
 is_dangerous_target() {
   local t="$1"
+  # Strip quoting left over from an unwrapped `sh -c "rm -rf /"` payload, so the
+  # target reads as the path it is rather than as `/"`.
+  t="${t%\"}"; t="${t#\"}"; t="${t%\'}"; t="${t#\'}"
   t="${t%/}"
   case "$t" in
     ""|"/"|"~"|"~/"|'$HOME'|'${HOME}'|"."|"./"|".."|"../"|"*"|"/*"|"~/*"|'$HOME/*'|'./*'|'.*'|"./.*") return 0 ;;
@@ -147,8 +150,12 @@ EOL
   fi
 
   # --- Reading secret files into the transcript ---
-  if printf '%s' "$seg" | grep -Eq '(^|[[:space:]])(cat|less|more|head|tail|bat|type|Get-Content)[[:space:]]+([^|;&]*[[:space:]/])?\.env(\.[a-zA-Z0-9_-]+)?([[:space:]]|$)' \
-     && ! printf '%s' "$seg" | grep -Eq '\.env\.(example|sample|template|dist)([[:space:]]|$)'; then
+  # The reader list is every command that prints a file whole. Claude Code 2.1.271 fixed
+  # its own permission checks missing the file `fmt`, `column` "and similar commands" read;
+  # the same commands walked past this rule. grep/sed/awk/cut stay off the list on purpose —
+  # they are how the remedy below lists variable names without printing values.
+  if printf '%s' "$seg" | grep -Eq '(^|[[:space:]])(cat|less|more|head|tail|bat|type|Get-Content|fmt|column|nl|od|xxd|hexdump|strings|base64|tac|rev|pr|fold)[[:space:]]+([^|;&]*[[:space:]/])?["'"'"']?\.env(\.[a-zA-Z0-9_-]+)?\*?["'"'"']?([[:space:]]|$)' \
+     && ! printf '%s' "$seg" | grep -Eq '\.env\.(example|sample|template|dist)["'"'"']?([[:space:]]|$)'; then
     apply env-read block "this prints a .env file (secrets) into the conversation. List variable names instead: grep -oE '^[A-Za-z_][A-Za-z0-9_]*' .env — or ask the user for the specific value you need."
   fi
   # --- Writing a secret file from the shell ---
