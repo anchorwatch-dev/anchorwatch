@@ -20,7 +20,7 @@ Goal: one verified, useful guide per day on a query real Claude Code users type,
 - [x] How to stop Claude Code from force-pushing or rewriting git history — covered by /guides/stop-claude-code-destructive-commands
 - [x] Keeping .env and secrets out of Claude Code's reach — covered by /guides/keep-secrets-out-of-claude-code
 - [x] Claude Code --dangerously-skip-permissions: what it actually disables and safer alternatives (/guides/claude-code-dangerously-skip-permissions)
-- [ ] Claude Code in CI: running headless with -p safely
+- [x] Claude Code in CI: running headless with -p safely (/guides/claude-code-in-ci-headless)
 - [ ] PreToolUse hook recipes: five copy-paste hooks with tests
 ### Configuration and workflow
 - [ ] CLAUDE.md best practices: what to put in it and what to leave out
@@ -31,6 +31,7 @@ Goal: one verified, useful guide per day on a query real Claude Code users type,
 - [ ] Skills: frontmatter fields explained (disable-model-invocation, allowed-tools, context: fork)
 - [x] Claude Code Stop hooks: making "done" mean tests ran — covered by /guides/make-claude-code-run-tests
 - [ ] Managing context: compaction, handoffs and what survives /compact
+- [ ] Claude Code --bare mode: what it skips, and why it stops using your subscription login (hit while testing the CI guide — bare mode exits 1 with an authentication error unless ANTHROPIC_API_KEY is set; the CI guide only covers this in one paragraph, and the docs say --bare will become the -p default)
 - [ ] Claude Code protected paths: the files no permission mode auto-approves writes to (the full .git/.claude/.bashrc/.npmrc list, why `Edit(.claude/**)` in allow does nothing, and the per-mode table — the skip-permissions guide only summarises it in one bullet)
 ### Troubleshooting
 - [ ] Claude Code permission prompt keeps appearing for cd && commands
