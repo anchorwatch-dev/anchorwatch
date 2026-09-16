@@ -128,8 +128,8 @@ to protected branch 'main' …)` and no push.
 ## Status
 
 Verified: the synthetic-event suite and the parity check against the classic
-guard (182 tests, `bun test`), and `claude plugin validate
-plugins/anchorwatch-mod --strict` on 2.1.268 — manifest, hooks manifest and
+guard (329 tests, `bun test`), and `claude plugin validate
+plugins/anchorwatch-mod --strict` on 2.1.273 — manifest, hooks manifest and
 the engine's module scan, which reports the hooks and the `$` calls it found.
 
 Not verified: a live session. Whether the hook fires, and what `next.error`

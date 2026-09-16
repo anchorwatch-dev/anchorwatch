@@ -9,6 +9,10 @@ AW_HOOK_EVENT="PreToolUse"
 CMD="$(aw_json "$AW_INPUT" .tool_input.command)"
 [ -z "$CMD" ] && exit 0
 aw_allowed "$CMD" && exit 0
+# The two rules below that look at the whole command line rather than one segment
+# (pipe-to-shell, env-dump) read the unwrapped form, so a `sh -c "…"` or `eval "…"`
+# payload does not hide the pipe from them the way it hid commands from the rules.
+CMD_U="$(aw_unwrap "$CMD")"
 
 # apply <rule> <default-level> <reason>   (deny exits immediately; warn accumulates)
 apply() {
@@ -135,7 +139,7 @@ EOL
   fi
 
   # --- Pipe remote script into a shell ---
-  if printf '%s' "$seg" | grep -Eq '(^|[[:space:]])(curl|wget)[[:space:]]' && printf '%s' "$CMD" | grep -Eq '(curl|wget)[^|]*\|[[:space:]]*(sudo[[:space:]]+(-E[[:space:]]+)?)?(ba|z|da|k)?sh([[:space:]]|$)'; then
+  if printf '%s' "$seg" | grep -Eq '(^|[[:space:]])(curl|wget)[[:space:]]' && printf '%s' "$CMD_U" | grep -Eq '(curl|wget)[^|]*\|[[:space:]]*(sudo[[:space:]]+(-E[[:space:]]+)?)?(ba|z|da|k)?sh(["'"'"'][[:space:]]*)?([[:space:]]|$)'; then
     apply pipe-to-shell block "piping a downloaded script straight into a shell (supply-chain risk). Download it to a file, inspect it, then run it."
   fi
 
@@ -174,7 +178,7 @@ $(write_dests "$seg")
 EOL
 
   if printf '%s' "$seg" | grep -Eq '^(sudo[[:space:]]+)?(printenv|env|set|export -p)[[:space:]]*$' \
-     && ! printf '%s' "$CMD" | grep -Eq '(printenv|env|set|export -p)[[:space:]]*\|[[:space:]]*(grep|rg|egrep|fgrep|awk)[[:space:]]'; then
+     && ! printf '%s' "$CMD_U" | grep -Eq '(printenv|env|set|export -p)[[:space:]]*\|[[:space:]]*(grep|rg|egrep|fgrep|awk)[[:space:]]'; then
     apply env-dump warn "dumping the whole environment can expose secrets in the transcript; grep for the specific variable instead"
   fi
 
