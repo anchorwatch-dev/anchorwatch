@@ -12,3 +12,5 @@ Environment notes: the sandbox has no `gh` binary and blocks most outbound HTTP 
 5. If you changed plugin behaviour: bump `version` in the affected `plugin.json` (semver), add a CHANGELOG entry (repo `CHANGELOG.md` and `site/content/pages/changelog.md`), update docs/guides text that became inaccurate, commit with a conventional message, and push the branch and open a PR (GitHub MCP `create_pull_request`) titled `release: <plugin> <version>` with the test output in the body. Do not push to main directly.
 6. Update `ops/state/last-seen-claude-version.txt` and append a one-line summary to `ops/state/release-watch.log` in the same PR.
 Rules: never weaken a `block` rule to fix a test; never add dependencies; keep bash 3.2 compatibility; never touch secrets or settings files.
+
+> **Paused 2026-09-16.** This routine is disabled (see ops/DECISIONS.md). The brief is kept intact so it can be re-enabled unchanged.

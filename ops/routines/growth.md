@@ -8,3 +8,5 @@ You run growth for Anchorwatch (anchorwatch.sh). Each day, do exactly one high-q
 3. Guides: 700–1200 words, specific, honest about limits, one clear link to Anchorwatch where genuinely relevant, frontmatter `title`, `description`, `date`, `updated`. Run `cd site && bun install && bun run build` to make sure it renders.
 4. Push the branch and open a PR (GitHub MCP `create_pull_request`) titled `growth: <what>` with a 3-line rationale (what data drove this, what you expect to change). Append a line to `ops/state/growth.log`.
 Never invent statistics, testimonials, or claims about Anthropic. Never use the word "Claude" in a product name.
+
+> **Paused 2026-09-16.** This routine is disabled (see ops/DECISIONS.md). The brief is kept intact so it can be re-enabled unchanged.
