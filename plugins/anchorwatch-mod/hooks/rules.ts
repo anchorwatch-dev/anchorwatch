@@ -56,19 +56,35 @@ export const DEFAULT_PROTECTED_BRANCHES: readonly string[] = [
  *
  * Nesting is unwrapped first, so a command inside one starts a segment of its own:
  * command substitution (`$(…)` and backticks), subshells, brace groups, and the
- * payload of `sh -c "…"`. Every rule below anchors on `(^|\s)cmd\s`, so a leading
- * `(`, backtick or quote defeated all of them at once — `X=$(rm -rf /)` and
- * `(rm -rf /)` read as inert text. Claude Code 2.1.271 closed the matching holes in
- * its own Bash permission checks (a subshell or `cd`+`git` chain skipping the prompt;
- * shell variable declaration flags misrepresenting the command being run).
+ * payload of `sh -c "…"` or `eval "…"`. Every rule below anchors on `(^|\s)cmd\s`, so a
+ * leading `(`, backtick or quote defeated all of them at once — `X=$(rm -rf /)`,
+ * `(rm -rf /)` and `eval "rm -rf /"` read as inert text. Claude Code 2.1.271 closed the
+ * matching holes in its own Bash permission checks (a subshell or `cd`+`git` chain
+ * skipping the prompt; shell variable declaration flags misrepresenting the command
+ * being run), and 2.1.273 stopped a Bash line its checker cannot fully analyze —
+ * `eval`, `env -C` and similar — from skipping the prompt.
+ *
+ * Only these two prefixes unwrap a quote, never a bare one: a quote not preceded by a
+ * shell-executing word is data, and stripping it would deny
+ * `git commit -m "rm -rf / broke prod"`.
+ *
+ * The trailing quote is dropped per segment too. A rule ending in `(\s|$)` never saw
+ * the last word of an unwrapped payload, so before 0.0.5 the `sh -c` unwrap only
+ * reached the rules that strip quoting per token (rm-recursive, env-read, secret-write)
+ * and `sh -c "git reset --hard"` still passed clean.
  */
 const SHELL_DASH_C = /(^|\s)(sudo\s+)?(ba|z|da|k)?sh\s+-c\s+["']?/g
+const EVAL_PREFIX = /(^|\s)(sudo\s+)?(command\s+|builtin\s+)?eval\s+["']?/g
+
+/** lib.sh `aw_unwrap`: strip the prefixes that introduce a quoted command payload. */
+export function unwrap(command: string): string {
+  return command.replace(SHELL_DASH_C, '$1').replace(EVAL_PREFIX, '$1')
+}
 
 export function segments(command: string): string[] {
-  return command
-    .replace(SHELL_DASH_C, '$1')
+  return unwrap(command)
     .split(/[`(){}]|&&|\|\||;|\||\n/)
-    .map(s => s.replace(/^\s+/, ''))
+    .map(s => s.replace(/^\s+/, '').replace(/["']+\s*$/, ''))
     .filter(s => s.length > 0)
 }
 
@@ -82,7 +98,7 @@ const SQL_DROP = /(drop\s+(table|database|schema)|truncate\s+(table\s+)?[a-z_"`.
 const SQL_DELETE = /delete\s+from\s+[a-z_"`.]+/
 const SQL_WHERE = /\swhere\s/
 const FETCHER = /(^|\s)(curl|wget)\s/
-const FETCH_PIPED_TO_SHELL = /(curl|wget)[^|]*\|\s*(sudo\s+(-E\s+)?)?(ba|z|da|k)?sh(\s|$)/
+const FETCH_PIPED_TO_SHELL = /(curl|wget)[^|]*\|\s*(sudo\s+(-E\s+)?)?(ba|z|da|k)?sh(["']\s*)?(\s|$)/
 const DISK_DESTROY =
   /(^|\s)(mkfs(\.[a-z0-9]+)?|fdisk|parted|shred)(\s|$)|(^|\s)(dd\s+if=|diskutil\s+(erase|partition))|>\s*\/dev\/(sd|nvme|disk|hd)/
 const PERM_BROAD = /chmod\s+(-R\s+)?(777|a\+rwx)(\s|$)|chown\s+-R\s+[^\s]+\s+\/(\s|$)/
@@ -287,6 +303,9 @@ export function denyText(deny: Deny): string {
 export function decide(command: string, ctx: DecideContext = {}): Deny | null {
   if (!command) return null
   const protectedBranches = ctx.protectedBranches ?? DEFAULT_PROTECTED_BRANCHES
+  // pipe-to-shell looks at the whole line rather than one segment, so it reads the
+  // unwrapped form — otherwise an `eval "curl … | sh"` payload hides the pipe from it.
+  const unwrapped = unwrap(command)
 
   for (const seg of segments(command)) {
     const low = seg.toLowerCase()
@@ -342,7 +361,7 @@ export function decide(command: string, ctx: DecideContext = {}): Deny | null {
     }
 
     // --- Pipe a remote script into a shell (checked against the whole command, as the script does) ---
-    if (FETCHER.test(seg) && FETCH_PIPED_TO_SHELL.test(command)) {
+    if (FETCHER.test(seg) && FETCH_PIPED_TO_SHELL.test(unwrapped)) {
       return {
         rule: 'pipe-to-shell',
         reason:

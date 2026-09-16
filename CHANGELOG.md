@@ -2,6 +2,20 @@
 
 All notable changes to the plugins in this repository. Format: [Keep a Changelog](https://keepachangelog.com); versions follow semver.
 
+## anchorwatch [0.1.4] - 2026-09-16
+### Fixed
+- `eval "…"` hid a command from every Bash rule, the same way `sh -c "…"` did before 0.1.3. The opening quote sits exactly where a rule expects a space, so `eval "rm -rf /"`, `eval 'rm -rf /'` and `eval "cat .env"` all passed clean. `aw_segments` now unwraps an `eval` payload alongside `sh -c`, including behind `sudo`, `command` and `builtin`. The rules skill has always told Claude not to reach for `eval` to get around the guard; until now nothing enforced it.
+- The *closing* quote of an unwrapped payload hid the last word of it. Any rule ending in `([[:space:]]|$)` never matched it, so 0.1.3's `sh -c` unwrap only ever reached the three rules that strip quoting per token (`rm-recursive`, `env-read`, `secret-write`) — `bash -c "git reset --hard"`, `sh -c "curl … | sh"`, `bash -c "chmod -R 777"` and `bash -c "npm publish"` still went through untouched. Segments now drop a trailing quote, which completes the 0.1.3 fix as well as the new one.
+- `pipe-to-shell` and `env-dump` match against the whole command line rather than one segment, so they now read the unwrapped form; an `eval "curl … | sh"` payload no longer hides the pipe from them.
+- Only `eval` and `sh -c` unwrap a quote, never a bare one: a quote not introduced by a shell-executing word is data, so `git commit -m "rm -rf / broke prod"`, `echo "cat .env is blocked"` and `grep -n "eval" src/app.js` stay allowed, and so do `eval "$(ssh-agent -s)"` and `eval "npm run build"`.
+- Context: Claude Code 2.1.273 reverted the 2.1.268 change that read `Read`/`Edit` deny rules off a Bash line carrying an `env -C`, `eval` or similar command its checker cannot analyze, and replaced it with a prompt for such a line. The engine's answer to an unanalyzable line is to ask; Anchorwatch's is to unwrap it and apply the rules.
+### Changed
+- No new rules and no rule weakened: the count is unchanged at 12 blocking and 13 warning. Test suite 173 → 196 cases.
+
+## anchorwatch-mod [0.0.5] - 2026-09-16
+### Fixed
+- All three fixes above ported: `segments` unwraps an `eval` payload and drops the trailing quote, and `pipe-to-shell` reads the unwrapped command. The tests cross-check every verdict against the classic bash guard, so the two gates still agree on each new case (329 cases, up from 284).
+
 ## anchorwatch [0.1.3] - 2026-09-15
 ### Fixed
 - Nesting no longer hides a command from every Bash rule. Each rule anchors on `(^|[[:space:]])cmd[[:space:]]`, so one leading `(`, backtick or quote defeated all of them at once: `X=$(rm -rf /)`, `` Y=`rm -rf /` ``, `(rm -rf /)`, `(echo x > .env)`, `bash -c "rm -rf /"` and `sh -c "cat .env"` all passed clean, and `(cd /tmp; rm -rf /)` downgraded to a warning because the target token read as `/)`. `aw_segments` now unwraps command substitution, subshells, brace groups and a `sh -c "…"` payload before splitting, so the inner command starts a segment of its own and the existing rules see it. `is_dangerous_target` strips quoting left over from an unwrapped payload. Claude Code 2.1.271 closed the matching holes in its own Bash permission checks — a subshell or `cd`+`git` chain skipping the prompt, and shell variable declaration flags misrepresenting the command being run.

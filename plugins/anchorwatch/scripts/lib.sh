@@ -3,7 +3,7 @@
 # Bash 3.2+ compatible (macOS default). Needs one JSON parser: jq (preferred), node, or python3.
 # Every hook script sources this file, then calls aw_read_input.
 
-AW_VERSION="0.1.3"
+AW_VERSION="0.1.4"
 AW_INPUT=""
 AW_CWD=""
 AW_CONFIG_JSON=""
@@ -178,17 +178,30 @@ EOL
 # Split a shell command into segments on ; && || | and newlines (rough but effective),
 # then unwrap nesting so a command inside one starts a segment of its own:
 # command substitution ($(…) and backticks), subshells, brace groups, and the
-# payload of `sh -c "…"`. Every rule anchors on `(^|[[:space:]])cmd[[:space:]]`, so a
-# leading `(`, backtick or quote used to defeat all of them at once — `X=$(rm -rf /)`,
-# `(rm -rf /)` and `bash -c "cat .env"` read as inert text. Claude Code 2.1.271 closed
-# the matching holes in its own Bash permission checks (a subshell or `cd`+`git` chain
-# skipping the prompt; shell variable declaration flags misrepresenting the command).
-aw_segments() {
+# payload of `sh -c "…"` or `eval "…"`. Every rule anchors on
+# `(^|[[:space:]])cmd[[:space:]]`, so a leading `(`, backtick or quote used to defeat
+# all of them at once — `X=$(rm -rf /)`, `(rm -rf /)`, `bash -c "cat .env"` and
+# `eval "rm -rf /"` read as inert text. Claude Code 2.1.271 closed the matching holes
+# in its own Bash permission checks (a subshell or `cd`+`git` chain skipping the
+# prompt; shell variable declaration flags misrepresenting the command), and 2.1.273
+# stopped a Bash line its checker cannot fully analyze — `eval`, `env -C` and similar —
+# from skipping the prompt.
+#
+# Only these two prefixes are unwrapped, never a bare quote: a quote that is not
+# preceded by a shell-executing word is data, and stripping it would deny
+# `git commit -m "rm -rf / broke prod"`.
+aw_unwrap() {
   printf '%s\n' "$1" \
     | sed -E 's/(^|[[:space:]])(sudo[[:space:]]+)?(ba|z|da|k)?sh[[:space:]]+-c[[:space:]]+["'"'"']?/\1/g' \
+    | sed -E 's/(^|[[:space:]])(sudo[[:space:]]+)?(command[[:space:]]+|builtin[[:space:]]+)?eval[[:space:]]+["'"'"']?/\1/g'
+}
+
+aw_segments() {
+  aw_unwrap "$1" \
     | sed -E 's/[`(){}]/\n/g' \
     | sed -E 's/(&&|\|\||;|\|)/\n/g' \
-    | sed -E 's/^[[:space:]]+//'
+    | sed -E 's/^[[:space:]]+//' \
+    | sed -E 's/["'"'"']+[[:space:]]*$//'
 }
 
 aw_protected_branches() {
