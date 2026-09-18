@@ -1,12 +1,12 @@
 {
-  "generated": "2026-09-17T06:57:50.185Z",
+  "generated": "2026-09-18T06:55:56.082Z",
   "last30": {
-    "pageviews": 288,
-    "uniques": 97
+    "pageviews": 292,
+    "uniques": 100
   },
   "today": {
-    "pageviews": 1,
-    "uniques": 1
+    "pageviews": 0,
+    "uniques": 0
   },
   "daily": [
     {
@@ -66,18 +66,18 @@
     },
     {
       "day": "2026-09-17",
-      "pageviews": 1,
-      "uniques": 1
+      "pageviews": 5,
+      "uniques": 4
     }
   ],
   "pages": [
     {
       "path": "/",
-      "n": 100
+      "n": 102
     },
     {
       "path": "/experiment",
-      "n": 94
+      "n": 95
     },
     {
       "path": "/docs",
@@ -97,7 +97,7 @@
     },
     {
       "path": "/docs/install",
-      "n": 10
+      "n": 11
     },
     {
       "path": "/thanks",
