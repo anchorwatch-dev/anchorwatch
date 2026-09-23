@@ -14,10 +14,10 @@ description: Six Claude Code plugins that add engineering discipline to Claude C
 <a class="btn" href="/docs/install/">Install free</a></div>
 <div class="plan hot"><h3>Anchorwatch Pro</h3><div class="price">$39 <small>one-time · personal licence · all updates</small></div><p class="who">For developers shipping real products with Claude Code.</p>
 <ul><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>Everything in the free plugin</span></li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>Quality Gates, Ship, Review Crew, Context Keeper, Setup Audit, Stack Packs</span></li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>Private marketplace: updates arrive like any plugin update</span></li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>Issue-based support, triaged daily</span></li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>14-day refund</span></li></ul>
-<a class="btn primary" href="/go/pro?from=pro">Buy Pro — $39<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+<a class="btn primary" href="https://buy.polar.sh/polar_cl_x21trBqQOepcIv9ItnKiFjyXbBaVBGxFu60610hdSjZ">Buy Pro — $39<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
 <div class="plan"><h3>Anchorwatch Team</h3><div class="price">$149 <small>one-time · up to 10 developers</small></div><p class="who">For teams that want the same discipline on every machine.</p>
 <ul><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>Everything in Pro, for ten people</span></li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>Shareable through your org's marketplace settings</span></li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>Priority issue triage</span></li><li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>VAT invoice from Polar</span></li></ul>
-<a class="btn" href="/go/pro?from=team&tier=team">Buy Team — $149<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+<a class="btn" href="https://buy.polar.sh/polar_cl_CqcdsrMCaDjQqPvDNHTjRKuqeOsFmmZshG3BN2Ud61E">Buy Team — $149<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
 </div>
 
 <p class="small">Payments and tax are handled by Polar as merchant of record. Delivery is read access to a private GitHub repository, granted automatically after checkout.</p>

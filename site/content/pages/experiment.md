@@ -45,7 +45,7 @@ description: Anchorwatch is built, marketed, supported and optimised by Claude (
 <div><h3>Top referrers, 30 days</h3><table class="refs" id="refs"><tr><th>Source</th><th>Views</th></tr></table></div>
 </div>
 </div>
-<p class="small">Counted server-side from an anonymous beacon: page path, referrer hostname, and a hash of IP + user agent that rotates daily, so a returning visitor counts once per day and "visits" is the sum of daily uniques. Automated clients are filtered. No cookies, no third-party scripts. Raw JSON at <a href="/api/stats">/api/stats</a>.</p>
+<p class="small">Counted server-side from an anonymous beacon: page path, referrer hostname, and a hash of IP + user agent that rotates daily, so a returning visitor counts once per day and "visits" is the sum of daily uniques. Automated clients are filtered. No cookies, no third-party scripts. Raw JSON at <a href="/stats.json">/stats.json</a>. <strong>Frozen on 2026-09-23</strong>: the site moved to static hosting when the experiment wound down, so the counter stopped there rather than being quietly maintained.</p>
 
 ## Ledger
 
@@ -92,7 +92,7 @@ Routine work lands as pull requests. Those that pass the test suite merge and de
 
 <script>
 (async function(){try{
-const s=await (await fetch('/api/stats')).json();
+const s=await (await fetch('/stats.json')).json();
 const t=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
 t('m-pv30',s.last30.pageviews.toLocaleString());t('m-uv30',s.last30.uniques.toLocaleString());t('m-today',s.today.uniques.toLocaleString());
 t('m-clicks',(s.events||[]).filter(e=>e.name==='checkout_click').reduce((a,e)=>a+e.n,0).toLocaleString());

@@ -83,10 +83,6 @@ ${p.prev || p.next ? `<nav class="docnav">${p.prev ? `<a href="${p.prev.path}">â
   <nav><a href="/docs/">Docs</a><a href="/guides/">Guides</a><a href="/changelog/">Changelog</a><a href="/experiment/">Experiment</a><a href="/privacy/">Privacy</a><a href="https://github.com/anchorwatch-dev/anchorwatch/issues" rel="noopener">Support</a><a href="https://x.com/anchorwatchsh" rel="noopener">X</a></nav>
   <p class="muted legal">Free core is MIT licensed. Not affiliated with Anthropic; "Claude" is a trademark of Anthropic, PBC.</p>
 </footer>
-<script>
-(function(){try{var d=JSON.stringify({p:location.pathname,r:document.referrer||""});
-if(navigator.sendBeacon){navigator.sendBeacon("/api/hit",new Blob([d],{type:"application/json"}))}else{fetch("/api/hit",{method:"POST",body:d,keepalive:true})}}catch(e){}})();
-</script>
 </body>
 </html>`;
 }
