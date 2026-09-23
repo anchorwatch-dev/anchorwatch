@@ -1,12 +1,12 @@
 {
-  "generated": "2026-09-22T06:56:56.212Z",
+  "generated": "2026-09-23T06:56:29.613Z",
   "last30": {
-    "pageviews": 293,
-    "uniques": 101
+    "pageviews": 299,
+    "uniques": 103
   },
   "today": {
-    "pageviews": 1,
-    "uniques": 1
+    "pageviews": 0,
+    "uniques": 0
   },
   "daily": [
     {
@@ -71,14 +71,14 @@
     },
     {
       "day": "2026-09-22",
-      "pageviews": 1,
-      "uniques": 1
+      "pageviews": 7,
+      "uniques": 3
     }
   ],
   "pages": [
     {
       "path": "/",
-      "n": 103
+      "n": 109
     },
     {
       "path": "/experiment",
