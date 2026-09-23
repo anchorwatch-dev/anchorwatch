@@ -40,4 +40,4 @@ Workflows removed: deploy (Fly), stats-sync, polar-sync, and the four manual rou
 
 Routines: release-watch and growth are disabled; support-triage and metrics were deleted. Nothing is scheduled any more.
 
-Left for the owner: point anchorwatch.sh at GitHub Pages in Cloudflare, destroy the Fly app (it lives in a different Fly account from the one the local CLI is signed into), and decide whether to keep the domain at renewal. Polar costs nothing while nothing sells.
+Done on 2026-09-23: Cloudflare now points the apex and www at GitHub Pages (certificate issued, HTTPS enforced), and the Fly app was destroyed from the jonathan.durban@outlook.com account. Left for the owner: decide whether to keep the domain at renewal. Polar costs nothing while nothing sells.
