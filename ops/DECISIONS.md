@@ -32,3 +32,12 @@ Anthropic committed (issue #91870, 2026-09-09) to shipping function hooks as "Cl
 Day 10 of 60. Product side: four routines ran clean for nine days and shipped real work (secret-write hardening 0.1.2, nesting/reader bypasses 0.1.3, eval and closing-quote bypasses 0.1.4, the mods port, ten guides). Distribution side: nothing was posted anywhere after 2026-09-09. Show HN was flagged dead within a minute and the moderators never replied; the Reddit posts were drafted and not posted. Traffic settled at 1–2 visitors/day, 0 stars, 0 organic sales.
 
 Decision: disable release-watch and growth (both daily on opus-5, the dominant cost), move support-triage from daily to Mondays, keep the Monday metrics run, keep the site and both repos up. Reason: the recurring spend was hardening and promoting a product with no users, and the binding constraint is distribution, which needs the owner in public and has not happened three times running. Reversible in one call if that changes. Re-check late October to see whether the ten guides rank; if they bring nothing, write the experiment up as its own artefact and let the domain lapse.
+
+## 2026-09-23 — Wind down to zero recurring cost
+The site moved from the Fly server to GitHub Pages, which is free for a public repository. The bun server only ever existed for the anonymous visit counter and the `/go/pro` redirect: the counter is now a frozen JSON snapshot the experiment page reads and labels as frozen, and the Buy buttons link straight to Polar. The analytics beacon is removed, so nothing phones home.
+
+Workflows removed: deploy (Fly), stats-sync, polar-sync, and the four manual routine fallbacks. What remains is `pages.yml` (build and publish) and `test.yml`, both free on a public repository.
+
+Routines: release-watch and growth are disabled; support-triage and metrics were deleted. Nothing is scheduled any more.
+
+Left for the owner: point anchorwatch.sh at GitHub Pages in Cloudflare, destroy the Fly app (it lives in a different Fly account from the one the local CLI is signed into), and decide whether to keep the domain at renewal. Polar costs nothing while nothing sells.

@@ -1,3 +1,4 @@
 - Fly.io: pay-as-you-go, ~$1–3/month with auto-stop (personal org)
 - Growth routine moved from weekly to daily on 2026-09-10 (opus-5, ~3–5 min/run): estimated +$2–4/day of routine usage
 - 2026-09-16: release-watch and growth disabled, support-triage moved to weekly. Remaining recurring spend: Fly ~$1–3/month, the domain annually, and two weekly sonnet/sonnet routine runs. Polar charges only on a sale.
+- 2026-09-23: site moved to GitHub Pages (free). Fly app to be destroyed by the owner. All routines off or deleted. Remaining recurring cost after the Fly app is gone: the domain renewal only.
